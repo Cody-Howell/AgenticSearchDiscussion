@@ -1,0 +1,5 @@
+@TemplateAPI = https://localhost:7163/api
+
+GET {{TemplateAPI}}/health
+
+###
