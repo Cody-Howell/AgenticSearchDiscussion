@@ -1,31 +1,26 @@
-# FullStackTemplate
+Alex (or other grader), this template is my own creation that has a React frontend, C# API, and Postgres database all hooked together already; since I know this will be my tech stack, I'm making it faster for myself. Please don't dock points :)
 
-This template serves a default Docker Compose, C# API, and Vite React-TS page. You should definitely rename the
-Vite page (titled templated-react) and is already converted to class React, along with my preferred Vite settings
-for a production build.
+---
 
-Make sure to change the build directory path in `vite.config.ts` to go to the C# deployment.
+## Elevator Pitch
+This project has a C# API that abstracts information sources (files, external APIs, etc.) behind a shared interface, which the AI can function call through a Table of Contents for different project providers. 
 
-See [this wiki page](https://wiki.codyhowell.dev/react) for Loadable imports. 
+Along with that information, you can put the AI into a more visible (and interactive) Research box, as you can with ChatGPT, which is intended for more deep thinking processes. Such as, you can assign it a title and give it a short description, and watch it think through items in real time. (this is up for consideration)
 
-## C# API
+## Contributors
+Me :D (Cody Howell)
 
-Here's a sample EndpointExtension class:
+## List of Features
+AI can read the following functions: 
+- Can see list of defined projects (user request)
+- Can see list of approved sources/Table of Contents (as desired)
+- Can get a text value from approved source (as desired)
+- Can query user for research re-alignment (user request)
 
-```csharp
-public static class MarkdownEndpointExtension {
-  public static WebApplication AddMarkdownEndpoints(this WebApplication app) {
-    // ...
+It might also be cool to implement an API-level to-do list that the AI can call on. That might be excellent for research tasks.
 
-    return app;
-  }
-}
-```
+I'll be utilizing a WebSocket connection to get info from the API. 
 
-You'll also need to consider the following: 
-
-- Rename solution
-- Rename project
-- Rename folder
-- Change values in Dockerfile
-- Change connection string/Docker Compose
+## Project Risks
+1. For files, I'll need to worry about the path and recursively finding all files (while excluding some folders like `node_modules`) for the table of contents.
+2. If you require me to, I'll need to worry about sending info from the WebSockets to the API (so far, I've mainly gone only one direction)
