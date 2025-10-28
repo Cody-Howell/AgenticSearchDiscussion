@@ -24,3 +24,210 @@ I'll be utilizing a WebSocket connection to get info from the API.
 ## Project Risks
 1. For files, I'll need to worry about the path and recursively finding all files (while excluding some folders like `node_modules`) for the table of contents.
 2. If you require me to, I'll need to worry about sending info from the WebSockets to the API (so far, I've mainly gone only one direction)
+
+(i know it's not done, I'm tired, I'm sorry)
+
+---
+
+## Project Schedule
+
+### Oct 29
+
+#### Estimates:
+
+Rubric items:
+- Network calls
+- Error handling
+
+Features:
+- Network call to API for AI response passthrough
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+### Nov 1
+
+#### Estimates:
+
+Rubric items:
+- CI/CD (to DigitalOcean)
+- KeyCloak authentication
+
+Features:
+- Make a working Function call in C#
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+
+### Nov 5
+
+#### Estimates:
+
+Rubric items:
+- Toasts
+- Context/Providers
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+
+### Nov 8
+
+#### Estimates:
+
+Rubric items:
+- Local storage
+- Typescript (?)
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+### Nov 12
+
+#### Estimates:
+
+Rubric items:
+- Tests in pipeline
+- Linting in pipeline
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+### Nov 15
+
+#### Estimates:
+
+Rubric items:
+- item 1 with description
+- item 2 with description
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+
+### Nov 19
+
+#### Estimates:
+
+Rubric items:
+- item 1 with description
+- item 2 with description
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+
+### Nov 22
+
+#### Estimates:
+
+Rubric items:
+- item 1 with description
+- item 2 with description
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+
+### Nov 25
+
+#### Estimates:
+
+Rubric items:
+- item 1 with description
+- item 2 with description
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+### Dec 3
+
+#### Estimates:
+
+Rubric items:
+- item 1 with description
+- item 2 with description
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
+
+### Dec 6
+
+#### Estimates:
+
+Rubric items:
+- item 1 with description
+- item 2 with description
+
+Features:
+- feature 4 with description
+- feature 5 with description
+
+#### Delivered
+
+Rubric Items:
+
+Features:
