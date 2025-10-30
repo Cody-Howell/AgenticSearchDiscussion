@@ -37,7 +37,6 @@ I'll be utilizing a WebSocket connection to get info from the API.
 
 Rubric items:
 - Network calls
-- Error handling
 
 Features:
 - Network call to API for AI response passthrough
@@ -45,8 +44,10 @@ Features:
 #### Delivered
 
 Rubric Items:
+- Network calls
 
 Features:
+- Got a response from the AI
 
 ### Nov 1
 
@@ -62,6 +63,7 @@ Features:
 #### Delivered
 
 Rubric Items:
+- Error handling
 
 Features:
 
