@@ -18,14 +18,15 @@ jobs:
       - name: Generate unique tag
         id: generate-tag
         run: |
-          TAG=$(date +"%Y%m%d%H%M%S")
+          BUILD_NUMBER=$(echo $GITHUB_RUN_NUMBER)
+          TAG="build-$BUILD_NUMBER"
           echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Build Docker image
         run: |
           docker build -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:latest \
                        -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:${{ env.TAG }} \
-                       -f ./TemplateAPI/Dockerfile TemplateAPI
+                       -f ./TemplateAPI/Dockerfile ./TemplateAPI
 
       - name: Push Docker image
         run: |
