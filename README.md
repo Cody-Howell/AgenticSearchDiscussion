@@ -63,10 +63,12 @@ Features:
 #### Delivered
 
 Rubric Items:
-- Error handling
+- CI/CD makes a docker image to import in DigitalOcean
+- KeyCloak
 
 Features:
-
+- SignIn button and GUID of user is known
+- Separate "Client" for KeyCloak
 
 ### Nov 5
 
@@ -75,6 +77,7 @@ Features:
 Rubric items:
 - Toasts
 - Context/Providers
+- Error Handling
 
 Features:
 - feature 4 with description
