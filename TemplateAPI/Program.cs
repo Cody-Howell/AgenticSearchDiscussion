@@ -11,6 +11,10 @@ using DotNetEnv;
 var builder = WebApplication.CreateBuilder(args);
 
 var env = Env.Load();
+foreach (var e in env)
+{
+    Console.WriteLine($"Env Variable: {e.Key} = {e.Value}");
+}
 var AI_TOKEN = env.Where(k => k .Key== "AI_TOKEN").FirstOrDefault().Value ?? throw new InvalidOperationException("AI_TOKEN environment variable is not set.");
 var connString = builder.Configuration["DOTNET_DATABASE_STRING"] ?? throw new InvalidOperationException("Connection string for database not found.");
 Console.WriteLine("Connection String: " + connString);
@@ -29,22 +33,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapGet("/api/health", () => "Hello");
-
-// Add new endpoints here
-/*
-curl -X POST https://ai-snow.reindeer-pinecone.ts.net/api/chat/completions \
-  -H "Authorization: Bearer {{$dotenv AI_TOKEN}}" \
-  -H "Content-Type: application/json" \
-  -d '{
-  "model": "gpt-oss-120b", 
-  "messages": [
-    {
-      "role": "user", 
-      "content": "Say anything"
-    }
-  ]
-}'
-*/
 
 app.MapPost("/api/chat", async (HttpContext httpContext, IHttpClientFactory httpClientFactory) =>
 {
