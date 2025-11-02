@@ -18,7 +18,7 @@ services:
 
     
   api:  
-    image: codyhowl/agentic-api:build-12
+    image: codyhowl/agentic-api:build-13
     restart: always
     environment:
       - DOTNET_DATABASE_STRING=Host=db;Database=templateAPIdb;Username=cody;Password=123456abc;
