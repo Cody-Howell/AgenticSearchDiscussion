@@ -6,16 +6,10 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.IO;
-using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var env = Env.Load();
-foreach (var e in env)
-{
-    Console.WriteLine($"Env Variable: {e.Key} = {e.Value}");
-}
-var AI_TOKEN = env.Where(k => k .Key== "AI_TOKEN").FirstOrDefault().Value ?? throw new InvalidOperationException("AI_TOKEN environment variable is not set.");
+var AI_TOKEN = builder.Configuration["AI_TOKEN"] ?? throw new InvalidOperationException("AI_TOKEN environment variable is not set.");
 var connString = builder.Configuration["DOTNET_DATABASE_STRING"] ?? throw new InvalidOperationException("Connection string for database not found.");
 Console.WriteLine("Connection String: " + connString);
 var dbConnector = new DatabaseConnector(connString);
