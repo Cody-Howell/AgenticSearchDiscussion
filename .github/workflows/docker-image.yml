@@ -25,14 +25,14 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:latest \
-                       -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:${{ env.TAG }} \
+                       -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:$TAG \
                        -f ./TemplateAPI/Dockerfile ./TemplateAPI
 
       - name: Push Docker image
         run: |
           docker push ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:latest
-          docker push ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:${{ env.TAG }}
+          docker push ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:$TAG
 
       - name: Log image name
         run: |
-          echo "Built and pushed image: ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:${{ env.TAG }}"
+          echo "Built and pushed image: ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:$TAG"
