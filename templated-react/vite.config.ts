@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: "./",
   build: {
-    outDir: "../ProjectTracker/wwwroot",
+    outDir: "../TemplateAPI/wwwroot",
     emptyOutDir: true,
   },
   server: {

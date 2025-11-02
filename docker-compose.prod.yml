@@ -18,7 +18,7 @@ services:
 
     
   api:  
-    image: codyhowl/agentic-api:build-13
+    image: codyhowl/agentic-api:build-14
     restart: always
     environment:
       - DOTNET_DATABASE_STRING=Host=db;Database=templateAPIdb;Username=cody;Password=123456abc;
@@ -29,7 +29,7 @@ services:
     depends_on:
       - db
     ports:
-      - 4110:8080
+      - 8080:8080
 
 networks:
   internal:
