@@ -25,7 +25,7 @@ jobs:
         run: |
           docker build -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:latest \
                        -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:${{ env.TAG }} \
-                       -f TemplateAPI/Dockerfile TemplateAPI
+                       -f ./TemplateAPI/Dockerfile TemplateAPI
 
       - name: Push Docker image
         run: |
