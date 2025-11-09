@@ -9,11 +9,11 @@ public partial class AiRequest {
     [JsonProperty("messages")]
     public UserMessage[] Messages { get; set; }
 
-    // [JsonProperty("tools")]
-    // public Tool[]? Tools { get; set; }
+    [JsonProperty("tools")]
+    public Tool[]? Tools { get; set; }
 
-    // [JsonProperty("tool_choice")]
-    // public string? ToolChoice { get; set; } = "auto";
+    [JsonProperty("tool_choice")]
+    public string ToolChoice { get; set; } = "auto";
 }
 
 public partial class UserMessage {
@@ -29,10 +29,10 @@ public partial class Tool {
     public string Type { get; set; }
 
     [JsonProperty("function")]
-    public Function Function { get; set; }
+    public CalledFunction Function { get; set; }
 }
 
-public partial class Function {
+public partial class CalledFunction {
     [JsonProperty("name")]
     public string Name { get; set; }
 
@@ -43,26 +43,20 @@ public partial class Function {
     public Parameters Parameters { get; set; }
 }
 
-public partial class Parameters {
+public partial class Parameters
+{
     [JsonProperty("type")]
     public string Type { get; set; }
 
     [JsonProperty("properties")]
-    public Properties Properties { get; set; }
+    public Dictionary<string, ParameterDescription> Properties { get; set; }
 
     [JsonProperty("required")]
     public string[] ParametersRequired { get; set; }
 }
 
-public partial class Properties {
-    [JsonProperty("summary")]
-    public Summary Summary { get; set; }
-
-    [JsonProperty("new_sports")]
-    public NewSports NewSports { get; set; }
-}
-
-public partial class NewSports {
+public partial class ParameterDescription
+{
     [JsonProperty("type")]
     public string Type { get; set; }
 
@@ -70,20 +64,13 @@ public partial class NewSports {
     public string Description { get; set; }
 
     [JsonProperty("items")]
-    public Items Items { get; set; }
+    public Items? Items { get; set; }
 }
 
-public partial class Items {
+public partial class Items
+{
     [JsonProperty("type")]
     public string Type { get; set; }
-}
-
-public partial class Summary {
-    [JsonProperty("type")]
-    public string Type { get; set; }
-
-    [JsonProperty("description")]
-    public string Description { get; set; }
 }
 
 public partial class AiRequest {

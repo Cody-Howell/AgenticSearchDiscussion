@@ -6,6 +6,11 @@ GET {{TemplateAPI}}/health
 POST {{TemplateAPI}}/chat
 Content-Type: text/plain
 
-Hello from REST Client
+What's happening in the news right now?
+###
+POST {{TemplateAPI}}/chat
+Content-Type: text/plain
+
+Hello! Write a short poem. 
 ###
 
