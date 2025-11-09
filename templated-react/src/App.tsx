@@ -18,7 +18,7 @@ const oidcConfig = {
 function App() {
   return (
     <AuthProvider {...oidcConfig}>
-      <div>
+      <div className="bg-gray-100 min-h-screen p-4">
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
