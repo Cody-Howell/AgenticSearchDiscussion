@@ -1,4 +1,4 @@
-@TemplateAPI = https://localhost:7163/api
+@TemplateAPI = http://localhost:4110/api
 
 GET {{TemplateAPI}}/health
 

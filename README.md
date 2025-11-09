@@ -75,32 +75,19 @@ Features:
 #### Estimates:
 
 Rubric items:
-- Toasts
-- Context/Providers
-- Error Handling
+--
 
 Features:
-- feature 4 with description
-- feature 5 with description
-
-#### Delivered
-
-Rubric Items:
-
-Features:
-
+--
 
 ### Nov 8
 
 #### Estimates:
 
 Rubric items:
-- Local storage
-- Typescript (?)
+- Typescript (frontend and backend)
 
 Features:
-- feature 4 with description
-- feature 5 with description
 
 #### Delivered
 

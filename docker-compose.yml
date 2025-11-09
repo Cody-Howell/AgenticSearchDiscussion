@@ -21,7 +21,7 @@ services:
     restart: always
     environment:
       - DOTNET_DATABASE_STRING=Host=db;Database=templateAPIdb;Username=cody;Password=123456abc;
-      - AI_TOKEN=loremtoken
+      - AI_TOKEN=${AI_TOKEN}
     depends_on:
       - db
     ports:
