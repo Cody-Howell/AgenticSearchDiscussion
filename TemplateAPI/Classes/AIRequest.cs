@@ -1,21 +1,27 @@
 namespace QuickType;
 
-using System.Globalization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 public partial class AiRequest {
     [JsonProperty("model")]
     public string Model { get; set; }
 
     [JsonProperty("messages")]
-    public Message[] Messages { get; set; }
+    public UserMessage[] Messages { get; set; }
 
-    [JsonProperty("tools")]
-    public Tool[] Tools { get; set; }
+    // [JsonProperty("tools")]
+    // public Tool[]? Tools { get; set; }
 
-    [JsonProperty("tool_choice")]
-    public string ToolChoice { get; set; }
+    // [JsonProperty("tool_choice")]
+    // public string? ToolChoice { get; set; } = "auto";
+}
+
+public partial class UserMessage {
+        [JsonProperty("role")]
+    public string Role { get; set; }
+
+    [JsonProperty("content")]
+    public string Content { get; set; }
 }
 
 public partial class Tool {

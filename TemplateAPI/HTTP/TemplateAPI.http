@@ -3,19 +3,9 @@
 GET {{TemplateAPI}}/health
 
 ###
-### POST /api/chat (raw text)
-
 POST {{TemplateAPI}}/chat
 Content-Type: text/plain
 
 Hello from REST Client
-
 ###
 
-# curl example (use fish shell)
-# Ensure the server process has AI_TOKEN exported, e.g. in fish:
-#   set -x AI_TOKEN your_token_here
-# Then run:
-#   curl -v -X POST https://localhost:7163/api/chat \
-#     -H "Content-Type: text/plain" \
-#     --data 'Hello from curl'
