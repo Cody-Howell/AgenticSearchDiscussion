@@ -1,14 +1,13 @@
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
 using System.Text;
-using Newtonsoft.Json;
-using QuickType;
+using TemplateAPI.Function;
 
 namespace TemplateAPI.Endpoints;
 
 public static class ChatEndpoint {
     public static void MapChatEndpoint(this WebApplication app) {
         string AI_TOKEN = app.Configuration["AI_TOKEN"] ?? throw new InvalidOperationException("AI_TOKEN environment variable is not set.");
+
+        string serverUrl = app.Configuration["AI_SERVER_URL"] ?? throw new InvalidOperationException("AI_SERVER_URL environment variable is not set.");
 
         app.MapPost("/api/chat", async (HttpContext httpContext, IHttpClientFactory httpClientFactory) => {
             // Read the raw string body
@@ -25,24 +24,9 @@ public static class ChatEndpoint {
 
             Console.WriteLine("Received message: " + message);
 
-            // Build payload
-            var payload = new AiRequest() {
-                Model = "gpt-oss-120b",
-                Messages = [new UserMessage { Role = "user", Content = message }]
-            };
-
-            var json = JsonConvert.SerializeObject(payload);
-
-            Console.WriteLine("JSON object is: " + json);
-
-            var client = httpClientFactory.CreateClient();
-            var req = new HttpRequestMessage(HttpMethod.Post, "https://ai-snow.reindeer-pinecone.ts.net/api/chat/completions");
-            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AI_TOKEN);
-            req.Content = new StringContent(json, Encoding.UTF8, "application/json");
-
             HttpResponseMessage resp;
             try {
-                resp = await client.SendAsync(req);
+                resp = await ChatHelper.SendMessageToAIAsync(message, AI_TOKEN, serverUrl, httpClientFactory);
             } catch (Exception ex) {
                 httpContext.Response.StatusCode = 502;
                 await httpContext.Response.WriteAsync($"Error calling AI server: {ex.Message}");
@@ -50,7 +34,6 @@ public static class ChatEndpoint {
             }
 
             var respText = await resp.Content.ReadAsStringAsync();
-            AiResponse response = AiResponse.FromJson(respText);
             var contentType = resp.Content.Headers.ContentType?.ToString() ?? "application/json";
 
             // Forward status code, content-type, and body
