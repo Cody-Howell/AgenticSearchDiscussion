@@ -86,14 +86,20 @@ Features:
 
 Rubric items:
 - Typescript (frontend and backend)
+- Pages
 
 Features:
+- 
 
 #### Delivered
 
 Rubric Items:
+- Types for all AI parts (conversation, function calls)
+- One more page (Home)
 
 Features:
+- Created classes and a default function to call
+- Worked on the project (!)
 
 ### Nov 12
 
