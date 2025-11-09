@@ -39,6 +39,9 @@ public partial class Choice {
 
     [JsonProperty("message")]
     public Message Message { get; set; }
+    
+    [JsonProperty("tool_calls")]
+    public ToolCall[]? ToolCalls { get; set; }
 }
 
 public partial class Message {
