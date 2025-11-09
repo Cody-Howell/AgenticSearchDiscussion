@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import { AuthProvider } from "react-oidc-context";
 import type { User } from "oidc-client-ts";
-import AuthSection from "./AuthComponent";
+import AuthSection from "./components/AuthComponent";
+import Home from "./components/Home";
 
 const onSigninCallback = (_user: User | void): void => {
   window.history.replaceState({}, document.title, window.location.pathname);
@@ -17,11 +18,14 @@ const oidcConfig = {
 function App() {
   return (
     <AuthProvider {...oidcConfig}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<AuthSection />} />
-        </Routes>
-      </BrowserRouter>
+      <div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/auth" element={<AuthSection />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </AuthProvider>
   );
 }
