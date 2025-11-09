@@ -29,7 +29,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapGet("/api/health", () => "Hello");
-app.MapChatEndpoint();
+app.MapChatEndpoints();
 
 
 app.MapFallbackToFile("index.html");
