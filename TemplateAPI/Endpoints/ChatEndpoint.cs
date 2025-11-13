@@ -4,7 +4,7 @@ using TemplateAPI.Function;
 namespace TemplateAPI.Endpoints;
 
 public static class ChatEndpoint {
-    public static void MapChatEndpoints(this WebApplication app) {
+    public static WebApplication MapChatEndpoints(this WebApplication app) {
         string AI_TOKEN = app.Configuration["AI_TOKEN"] ?? throw new InvalidOperationException("AI_TOKEN environment variable is not set.");
         string serverUrl = app.Configuration["AI_SERVER_URL"] ?? throw new InvalidOperationException("AI_SERVER_URL environment variable is not set.");
 
@@ -40,5 +40,7 @@ public static class ChatEndpoint {
             httpContext.Response.ContentType = contentType;
             await httpContext.Response.WriteAsync(respText);
         });
+
+        return app;
     }
 }

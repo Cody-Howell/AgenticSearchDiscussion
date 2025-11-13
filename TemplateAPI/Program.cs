@@ -29,7 +29,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapGet("/api/health", () => "Hello");
-app.MapChatEndpoints();
+app.MapChatEndpoints()
+    .MapTodoEndpoints();
 
 
 app.MapFallbackToFile("index.html");

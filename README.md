@@ -106,26 +106,25 @@ Features:
 #### Estimates:
 
 Rubric items:
-- Tests in pipeline
-- Linting in pipeline
+- Agent function calls
 
 Features:
-- feature 4 with description
-- feature 5 with description
+- To-do lists are added per global conversation
 
 #### Delivered
 
 Rubric Items:
 
 Features:
+- To-do lists are stored in the API (in memory)
 
 ### Nov 15
 
 #### Estimates:
 
 Rubric items:
-- item 1 with description
-- item 2 with description
+- Tests in pipeline
+- Linting in pipeline
 
 Features:
 - feature 4 with description
