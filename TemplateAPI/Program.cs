@@ -1,13 +1,8 @@
 using TemplateAPI;
 using TemplateAPI.Classes;
 using System.Data;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using System.IO;
-using QuickType;
 using TemplateAPI.Endpoints;
+using TemplateAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +15,7 @@ builder.Services.AddSingleton<IDbConnection>(provider => {
 });
 
 builder.Services.AddSingleton<DBService>();
-builder.Services.AddHttpClient();
+builder.Services.AddSingleton<TodoService>();
 
 var app = builder.Build();
 

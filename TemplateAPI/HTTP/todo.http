@@ -1,0 +1,12 @@
+@TemplateAPI = http://localhost:4110/api
+@id = 2
+
+###
+GET {{TemplateAPI}}/todo/{{id}}
+###
+GET {{TemplateAPI}}/todo/{{id}}/oldest
+###
+POST {{TemplateAPI}}/todo/{{id}}?item=Do%20The%20Nesdfw%20Thing
+###
+DELETE {{TemplateAPI}}/todo/{{id}}
+###
