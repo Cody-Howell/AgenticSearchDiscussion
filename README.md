@@ -123,18 +123,20 @@ Features:
 #### Estimates:
 
 Rubric items:
-- Tests in pipeline
-- Linting in pipeline
+- More views 
 
 Features:
-- feature 4 with description
-- feature 5 with description
+- Todo list features
+- File endpoints
 
 #### Delivered
 
-Rubric Items:
+Rubric items:
+- More views 
 
 Features:
+- Todo list features
+- File endpoints started (not quite working)
 
 
 ### Nov 19
@@ -142,8 +144,8 @@ Features:
 #### Estimates:
 
 Rubric items:
-- item 1 with description
-- item 2 with description
+- Tests in pipeline
+- Linting in pipeline
 
 Features:
 - feature 4 with description
