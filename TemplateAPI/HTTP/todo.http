@@ -1,5 +1,5 @@
 @TemplateAPI = http://localhost:4110/api
-@id = 2
+@id = 1
 
 ###
 GET {{TemplateAPI}}/todo/{{id}}
