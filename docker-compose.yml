@@ -28,5 +28,8 @@ services:
       - db
     ports:
       - 4110:8080
+    # Mount host data_repo into the container at /data_repo so data isn't baked into the image
+    volumes:
+      - ./data_repo:/data_repo:rw
 
 

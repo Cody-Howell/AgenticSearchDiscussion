@@ -5,8 +5,9 @@ WORKDIR /src
 COPY TemplateAPI/TemplateAPI.csproj ./TemplateAPI/TemplateAPI.csproj
 RUN dotnet restore TemplateAPI/TemplateAPI.csproj
 
-# Copy the rest of the repository (including data_repo) into the build context
-COPY . .
+# Copy only the API project files into the build context (avoid copying host data_repo)
+# This keeps build artifacts small and prevents baking local `data_repo` into the image.
+COPY TemplateAPI/. ./TemplateAPI/
 
 # Publish the app
 RUN dotnet publish TemplateAPI/TemplateAPI.csproj -c Release -o /app/out
@@ -17,7 +18,8 @@ WORKDIR /app
 # Copy published output
 COPY --from=build /app/out .
 
-# Ensure data_repo is present in the runtime image
-COPY --from=build /src/data_repo ./data_repo
+# Expect `data_repo` to be mounted at runtime rather than baked into the image.
+# Declare the mount point so Docker users know where to attach the host folder.
+VOLUME ["/data_repo"]
 
 ENTRYPOINT ["dotnet", "TemplateAPI.dll"]

@@ -30,6 +30,9 @@ services:
       - db
     ports:
       - 8080:8080
+    # In prod we also mount the host ./data_repo so the runtime uses external data
+    volumes:
+      - ./data_repo:/data_repo:ro
 
 networks:
   internal:
