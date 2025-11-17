@@ -4,6 +4,7 @@ import type { User } from "oidc-client-ts";
 import AuthSection from "./components/AuthComponent";
 import Home from "./components/Home";
 import TodoManager from "./components/TodoManager";
+import FileManager from "./components/FileManager";
 
 const onSigninCallback = (_user: User | void): void => {
   window.history.replaceState({}, document.title, window.location.pathname);
@@ -24,7 +25,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<AuthSection />} />
-            <Route path="/todo" element={      <TodoManager />} />
+            <Route path="/todo" element={<TodoManager />} />
+            <Route path="/file" element={<FileManager />} />
           </Routes>
         </BrowserRouter>
       </div>
