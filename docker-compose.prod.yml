@@ -23,6 +23,7 @@ services:
     environment:
       - DOTNET_DATABASE_STRING=Host=db;Database=templateAPIdb;Username=cody;Password=123456abc;
       - AI_TOKEN=${AI_TOKEN}
+      - AI_SERVER_URL=https://ai-snow.reindeer-pinecone.ts.net/api/chat/completions
     networks:
       - web
       - internal
