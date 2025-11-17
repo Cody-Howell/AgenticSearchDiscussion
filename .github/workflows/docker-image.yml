@@ -27,9 +27,13 @@ jobs:
 
       - name: Build Docker image
         run: |
+          # Use the repository root as the build context so the Dockerfile's
+          # COPY ./TemplateAPI/. ./TemplateAPI/ works (it expects TemplateAPI
+          # to be present in the context). Previously the job used
+          # ./TemplateAPI as the context which caused "/TemplateAPI: not found".
           docker build -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:latest \
                        -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:$TAG \
-                       -f ./TemplateAPI/Dockerfile ./TemplateAPI
+                       -f ./TemplateAPI/Dockerfile .
 
       - name: Push Docker image
         run: |
