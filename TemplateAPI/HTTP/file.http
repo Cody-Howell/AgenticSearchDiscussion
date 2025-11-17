@@ -1,6 +1,7 @@
 @TemplateAPI = http://localhost:4110/api
 @Folder = proj_2
 @File = proj2.txt
+# @File = lorem/loremt.txt
 
 ###
 GET {{TemplateAPI}}/file
