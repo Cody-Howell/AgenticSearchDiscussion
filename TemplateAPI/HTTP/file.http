@@ -1,0 +1,5 @@
+@TemplateAPI = http://localhost:4110/api
+
+###
+GET {{TemplateAPI}}/file
+###

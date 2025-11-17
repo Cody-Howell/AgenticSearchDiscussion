@@ -1,2 +1,3 @@
 dbdata/
 .env
+data_repo/*

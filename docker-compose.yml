@@ -16,8 +16,9 @@ services:
 
     
   api:  
-    build: 
-      context: ./TemplateAPI
+    build:
+      context: .
+      dockerfile: ./TemplateAPI/Dockerfile
     restart: always
     environment:
       - DOTNET_DATABASE_STRING=Host=db;Database=templateAPIdb;Username=cody;Password=123456abc;
