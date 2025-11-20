@@ -1,9 +1,9 @@
 namespace TemplateAPI.Endpoints;
 
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.Hosting;
 using TemplateAPI.Services;
 
 public static class FileEndpoint {

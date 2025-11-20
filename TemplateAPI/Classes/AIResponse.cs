@@ -1,8 +1,8 @@
 namespace QuickType;
-
-using System.Globalization;
+#pragma warning disable CS8618
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Globalization;
 
 public partial class AiResponse {
     [JsonProperty("choices")]
@@ -50,13 +50,13 @@ public partial class ToolCall {
     public string Type { get; set; }
 
     [JsonProperty("function")]
-    public FunctionCall Function { get; set; }
+    public Function Function { get; set; }
 
     [JsonProperty("id")]
     public string Id { get; set; }
 }
 
-public partial class FunctionCall {
+public partial class Function {
     [JsonProperty("name")]
     public string Name { get; set; }
 
@@ -133,4 +133,87 @@ internal static class Converter {
             },
     };
 }
+
+// namespace QuickType
+// {
+
+//     using System.Globalization;
+//     using Newtonsoft.Json;
+//     using Newtonsoft.Json.Converters;
+
+//     public partial class Ignore
+//     {
+//         [JsonProperty("choices")]
+//         public Choice[] Choices { get; set; }
+
+//         [JsonProperty("created")]
+//         public long Created { get; set; }
+
+//         [JsonProperty("model")]
+//         public string Model { get; set; }
+
+//         [JsonProperty("system_fingerprint")]
+//         public string SystemFingerprint { get; set; }
+
+//         [JsonProperty("object")]
+//         public string Object { get; set; }
+
+//         [JsonProperty("usage")]
+//         public Usage Usage { get; set; }
+
+//         [JsonProperty("id")]
+//         public string Id { get; set; }
+
+//         [JsonProperty("timings")]
+//         public Timings Timings { get; set; }
+//     }
+
+//     public partial class Choice
+//     {
+//         [JsonProperty("finish_reason")]
+//         public string FinishReason { get; set; }
+
+//         [JsonProperty("index")]
+//         public long Index { get; set; }
+
+//         [JsonProperty("message")]
+//         public Message Message { get; set; }
+//     }
+
+//     public partial class Message
+//     {
+//         [JsonProperty("role")]
+//         public string Role { get; set; }
+
+//         [JsonProperty("reasoning_content")]
+//         public string ReasoningContent { get; set; }
+
+//         [JsonProperty("content")]
+//         public object Content { get; set; }
+
+//         [JsonProperty("tool_calls")]
+//         public ToolCall[] ToolCalls { get; set; }
+//     }
+
+//     public partial class ToolCall
+//     {
+//         [JsonProperty("type")]
+//         public string Type { get; set; }
+
+//         [JsonProperty("function")]
+//         public Function Function { get; set; }
+
+//         [JsonProperty("id")]
+//         public string Id { get; set; }
+//     }
+
+//     public partial class Function
+//     {
+//         [JsonProperty("name")]
+//         public string Name { get; set; }
+
+//         [JsonProperty("arguments")]
+//         public string Arguments { get; set; }
+//     }
+// }
 

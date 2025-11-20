@@ -19,6 +19,11 @@ public static class TodoEndpoint {
             return Results.Ok();
         });
 
+        app.MapPost("/api/todo/{id}/", (int id, TodoService todos, IChatService chatService) => {
+            // Placeholder: endpoint now receives IChatService via DI for future use
+            return Results.Ok();
+        });
+
         app.MapDelete("/api/todo/{id}", ([FromServices] TodoService service, int id, Guid? item) => {
             if (item is not null) {
                 service.DeleteTodoItem(id, (Guid)item);

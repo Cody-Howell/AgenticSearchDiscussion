@@ -1,7 +1,8 @@
+using System.Data;
 using TemplateAPI;
 using TemplateAPI.Classes;
-using System.Data;
 using TemplateAPI.Endpoints;
+using TemplateAPI.Function;
 using TemplateAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,11 @@ builder.Services.AddSingleton<IDbConnection>(provider => {
 
 builder.Services.AddSingleton<DBService>();
 builder.Services.AddSingleton<TodoService>();
+// HTTP client and Chat service registration
+builder.Services.AddHttpClient();
+var aiServerUrl = builder.Configuration["AI_SERVER_URL"] ?? throw new InvalidOperationException("AI_SERVER_URL environment variable is not set.");
+builder.Services.AddSingleton(new ChatServiceConfig { ServerUrl = aiServerUrl, AiToken = AI_TOKEN });
+builder.Services.AddSingleton<IChatService, ChatService>();
 
 var app = builder.Build();
 

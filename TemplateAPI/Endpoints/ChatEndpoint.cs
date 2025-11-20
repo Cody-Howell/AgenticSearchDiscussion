@@ -1,15 +1,15 @@
+using QuickType;
 using System.Text;
+using Newtonsoft.Json;
+using TemplateAPI.Endpoints;
 using TemplateAPI.Function;
 
 namespace TemplateAPI.Endpoints;
 
 public static class ChatEndpoint {
     public static WebApplication MapChatEndpoints(this WebApplication app) {
-        string AI_TOKEN = app.Configuration["AI_TOKEN"] ?? throw new InvalidOperationException("AI_TOKEN environment variable is not set.");
-        string serverUrl = app.Configuration["AI_SERVER_URL"] ?? throw new InvalidOperationException("AI_SERVER_URL environment variable is not set.");
-
-        app.MapPost("/api/chat", async (HttpContext httpContext, IHttpClientFactory httpClientFactory) => {
-            // Read the raw string body
+        app.MapPost("/api/chat", async (HttpContext httpContext, IChatService chatService) => {
+            // Read the raw plaintext body
             string message;
             using (var reader = new StreamReader(httpContext.Request.Body, Encoding.UTF8)) {
                 message = await reader.ReadToEndAsync();
@@ -23,22 +23,48 @@ public static class ChatEndpoint {
 
             Console.WriteLine("Received message: " + message);
 
-            HttpResponseMessage resp;
+            var userMessage = new UserMessage { Role = "user", Content = message };
+            var functionTest = new Tool
+                    {
+                        Type = "function",
+                        Function = new CalledFunction
+                        {
+                            Name = "search_tool",
+                            Description = "A tool to search the web for relevant information.",
+                            Parameters = new Parameters
+                            {
+                                Type = "object",
+                                Properties = new Dictionary<string, ParameterDescription>
+                                {
+                                    ["summary"] = new ParameterDescription
+                                    {
+                                        Type = "string",
+                                        Description = "The search query provided by the user."
+                                    },
+                                    ["maxResults"] = new ParameterDescription
+                                    {
+                                        Type = "integer",
+                                        Description = "The maximum number of results to return."
+                                    }
+                                },
+                                ParametersRequired = new[] { "summary" }
+                            }
+                        }
+                    };
+
+            AiResponse aiResp;
             try {
-                resp = await ChatHelper.SendMessageToAIAsync(message, AI_TOKEN, serverUrl, httpClientFactory);
+                aiResp = await chatService.SendMessageAsync([userMessage], [functionTest]);
             } catch (Exception ex) {
                 httpContext.Response.StatusCode = 502;
                 await httpContext.Response.WriteAsync($"Error calling AI server: {ex.Message}");
                 return;
             }
 
-            var respText = await resp.Content.ReadAsStringAsync();
-            var contentType = resp.Content.Headers.ContentType?.ToString() ?? "application/json";
-
-            // Forward status code, content-type, and body
-            httpContext.Response.StatusCode = (int)resp.StatusCode;
-            httpContext.Response.ContentType = contentType;
-            await httpContext.Response.WriteAsync(respText);
+            var respJson = JsonConvert.SerializeObject(aiResp);
+            httpContext.Response.StatusCode = 200;
+            httpContext.Response.ContentType = "application/json";
+            await httpContext.Response.WriteAsync(respJson);
         });
 
         return app;

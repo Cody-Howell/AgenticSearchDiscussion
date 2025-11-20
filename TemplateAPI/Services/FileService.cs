@@ -1,9 +1,9 @@
 namespace TemplateAPI.Services;
 
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.Hosting;
 
 public class FileService {
     // Walk upward from the provided start path (or AppContext/CurrentDirectory fallback)

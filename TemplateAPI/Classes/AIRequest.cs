@@ -17,7 +17,7 @@ public partial class AiRequest {
 }
 
 public partial class UserMessage {
-        [JsonProperty("role")]
+    [JsonProperty("role")]
     public string Role { get; set; }
 
     [JsonProperty("content")]
@@ -43,8 +43,7 @@ public partial class CalledFunction {
     public Parameters Parameters { get; set; }
 }
 
-public partial class Parameters
-{
+public partial class Parameters {
     [JsonProperty("type")]
     public string Type { get; set; }
 
@@ -55,8 +54,7 @@ public partial class Parameters
     public string[] ParametersRequired { get; set; }
 }
 
-public partial class ParameterDescription
-{
+public partial class ParameterDescription {
     [JsonProperty("type")]
     public string Type { get; set; }
 
@@ -67,8 +65,7 @@ public partial class ParameterDescription
     public Items? Items { get; set; }
 }
 
-public partial class Items
-{
+public partial class Items {
     [JsonProperty("type")]
     public string Type { get; set; }
 }
