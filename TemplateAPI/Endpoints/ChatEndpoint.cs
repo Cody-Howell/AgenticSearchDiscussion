@@ -1,6 +1,6 @@
+using Newtonsoft.Json;
 using QuickType;
 using System.Text;
-using Newtonsoft.Json;
 using TemplateAPI.Endpoints;
 using TemplateAPI.Function;
 
@@ -24,33 +24,27 @@ public static class ChatEndpoint {
             Console.WriteLine("Received message: " + message);
 
             var userMessage = new UserMessage { Role = "user", Content = message };
-            var functionTest = new Tool
-                    {
-                        Type = "function",
-                        Function = new CalledFunction
-                        {
-                            Name = "search_tool",
-                            Description = "A tool to search the web for relevant information.",
-                            Parameters = new Parameters
-                            {
-                                Type = "object",
-                                Properties = new Dictionary<string, ParameterDescription>
-                                {
-                                    ["summary"] = new ParameterDescription
-                                    {
-                                        Type = "string",
-                                        Description = "The search query provided by the user."
-                                    },
-                                    ["maxResults"] = new ParameterDescription
-                                    {
-                                        Type = "integer",
-                                        Description = "The maximum number of results to return."
-                                    }
-                                },
-                                ParametersRequired = new[] { "summary" }
+            var functionTest = new Tool {
+                Type = "function",
+                Function = new CalledFunction {
+                    Name = "search_tool",
+                    Description = "A tool to search the web for relevant information.",
+                    Parameters = new Parameters {
+                        Type = "object",
+                        Properties = new Dictionary<string, ParameterDescription> {
+                            ["summary"] = new ParameterDescription {
+                                Type = "string",
+                                Description = "The search query provided by the user."
+                            },
+                            ["maxResults"] = new ParameterDescription {
+                                Type = "integer",
+                                Description = "The maximum number of results to return."
                             }
-                        }
-                    };
+                        },
+                        ParametersRequired = new[] { "summary" }
+                    }
+                }
+            };
 
             AiResponse aiResp;
             try {

@@ -144,19 +144,18 @@ Features:
 #### Estimates:
 
 Rubric items:
-- Tests in pipeline
-- Linting in pipeline
+- Agentic functionality
 
 Features:
-- feature 4 with description
-- feature 5 with description
+- Agent can create new todo items for a given ID
 
 #### Delivered
 
 Rubric Items:
+- Agentic functionality (partial)
 
 Features:
-
+- Agent can almost create new items from long messages
 
 ### Nov 22
 

@@ -10,3 +10,9 @@ POST {{TemplateAPI}}/todo/{{id}}?item=Do%20The%20Nesdfw%20Thing
 ###
 DELETE {{TemplateAPI}}/todo/{{id}}
 ###
+POST {{TemplateAPI}}/todo/{{id}}/break
+Content-Type: text/plain
+
+Describe the C# LINQ calls. 
+Then pick one and tell me in-depth how the engine works and why 
+it's better than doing anything else.  
