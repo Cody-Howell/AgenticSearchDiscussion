@@ -53,6 +53,7 @@ public class FileService {
 
         var files = Directory.EnumerateFiles(fullRequested, "*", SearchOption.AllDirectories)
             .Select(f => Path.GetRelativePath(fullRequested, f))
+            .Where(f => !f.StartsWith(".git/"))
             .ToArray();
 
         return files;
