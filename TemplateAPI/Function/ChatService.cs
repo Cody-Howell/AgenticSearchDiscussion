@@ -19,7 +19,7 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             Tools = functions
         };
 
-        var json = JsonConvert.SerializeObject(payload);
+        var json = JsonConvert.SerializeObject(payload, QuickType.Converter.Settings);
 
         var client = httpFactory.CreateClient();
         var req = new HttpRequestMessage(HttpMethod.Post, config.ServerUrl);

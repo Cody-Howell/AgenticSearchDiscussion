@@ -133,10 +133,29 @@ public static class TodoEndpoint {
                     // Call the TodoService to add the item
                     todos.AddTodoItem(id, itemArg);
 
+                    // First, append an assistant message representing the function/tool call
+                    // so the AI server sees the assistant initiated a tool call.
+                    messages.Add(new UserMessage {
+                        Role = "assistant",
+                        ToolCalls = new[] {
+                            new {
+                                type = "function",
+                                function = new {
+                                    name = toolCall.Function.Name,
+                                    arguments = argsJson
+                                },
+                                id = toolCall.Id
+                            }
+                        }
+                    });
 
-
-                    // Append the added item as an user message so the AI knows the action result
-                    messages.Add(new UserMessage { Role = "tool", Content = itemArg });
+                    // Then append the added item as a `tool` message including the tool_call_id
+                    // Content is JSON so the AI can parse a structured result.
+                    messages.Add(new UserMessage {
+                        Role = "tool",
+                        ToolCallId = toolCall.Id,
+                        Content = JsonConvert.SerializeObject(new { status = "success", message = "Item added successfully.", item = itemArg })
+                    });
                     foreach (var item in messages) {
                         Console.WriteLine($"Role: {item.Role}, Content: {item.Content}");
                     }

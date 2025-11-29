@@ -4,10 +4,10 @@ using Newtonsoft.Json;
 
 public partial class AiRequest {
     [JsonProperty("model")]
-    public string Model { get; set; }
+    public required string Model { get; set; }
 
     [JsonProperty("messages")]
-    public UserMessage[] Messages { get; set; }
+    public required UserMessage[] Messages { get; set; }
 
     [JsonProperty("tools")]
     public Tool[]? Tools { get; set; }
@@ -18,48 +18,57 @@ public partial class AiRequest {
 
 public partial class UserMessage {
     [JsonProperty("role")]
-    public string Role { get; set; }
+    public required string Role { get; set; }
 
-    [JsonProperty("content")]
-    public string Content { get; set; }
+    [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
+    public string? Content { get; set; }
+
+    [JsonProperty("tool_call_id", NullValueHandling = NullValueHandling.Ignore)]
+    public string? ToolCallId { get; set; }
+
+    [JsonProperty("function_call", NullValueHandling = NullValueHandling.Ignore)]
+    public object? FunctionCall { get; set; }
+
+    [JsonProperty("tool_calls", NullValueHandling = NullValueHandling.Ignore)]
+    public object[]? ToolCalls { get; set; }
 }
 
 public partial class Tool {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    public required string Type { get; set; }
 
     [JsonProperty("function")]
-    public CalledFunction Function { get; set; }
+    public required CalledFunction Function { get; set; }
 }
 
 public partial class CalledFunction {
     [JsonProperty("name")]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     [JsonProperty("description")]
-    public string Description { get; set; }
+    public required string Description { get; set; }
 
     [JsonProperty("parameters")]
-    public Parameters Parameters { get; set; }
+    public required Parameters Parameters { get; set; }
 }
 
 public partial class Parameters {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    public required string Type { get; set; }
 
     [JsonProperty("properties")]
-    public Dictionary<string, ParameterDescription> Properties { get; set; }
+    public required Dictionary<string, ParameterDescription> Properties { get; set; }
 
     [JsonProperty("required")]
-    public string[] ParametersRequired { get; set; }
+    public required string[] ParametersRequired { get; set; }
 }
 
 public partial class ParameterDescription {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    public required string Type { get; set; }
 
     [JsonProperty("description")]
-    public string Description { get; set; }
+    public required string Description { get; set; }
 
     [JsonProperty("items")]
     public Items? Items { get; set; }
@@ -67,9 +76,9 @@ public partial class ParameterDescription {
 
 public partial class Items {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    public required string Type { get; set; }
 }
 
 public partial class AiRequest {
-    public static AiRequest FromJson(string json) => JsonConvert.DeserializeObject<AiRequest>(json, QuickType.Converter.Settings);
+    public static AiRequest FromJson(string json) => JsonConvert.DeserializeObject<AiRequest>(json, QuickType.Converter.Settings) ?? throw new JsonException("Failed to deserialize AiRequest");
 }
