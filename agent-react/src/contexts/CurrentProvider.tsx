@@ -1,21 +1,28 @@
 import { ReactNode, useEffect, useState } from "react";
-import { StateContext } from "./CurrentContext";
+import { StateContext, Message, TodoItem } from "./CurrentContext";
 import { getTodos, addTodo } from "../api/todoApi";
 
 
 export function StateProvider({ children }: { children: ReactNode; }) {
     const [currentId, setCurrentId] = useState<number>(0);
-    const [items, setItems] = useState<string[]>([]);
+    const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+    const [items, setItems] = useState<Message[]>([]);
 
     const refresh = async () => {
         if (!currentId) {
+            setTodoItems([]);
             setItems([]);
             return;
         }
         try {
             const todos = await getTodos(currentId);
-            console.log(todos)
-            setItems(todos.map((t) => t.text));
+            console.log(todos);
+            setTodoItems(todos);
+            setItems(todos.map((t) => ({
+                type: "todo",
+                role: "user",
+                message: t.text
+            })));
         } catch (e) {
             // eslint-disable-next-line no-console
             console.error("Failed to load todos", e);
@@ -35,7 +42,7 @@ export function StateProvider({ children }: { children: ReactNode; }) {
 
     return (
         <StateContext.Provider
-            value={{ currentId, setCurrentId, items, refresh, addItem }}
+            value={{ currentId, setCurrentId, todoItems, items, refresh, addItem }}
         >
             {children}
         </StateContext.Provider>

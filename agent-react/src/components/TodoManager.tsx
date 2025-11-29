@@ -2,7 +2,7 @@ import { useState, FormEvent } from "react";
 import { useCurrent } from "../contexts/CurrentContext";
 
 export default function TodoManager() {
-  const { currentId, setCurrentId, items, addItem } = useCurrent();
+  const { currentId, setCurrentId, todoItems, addItem } = useCurrent();
   const [idInput, setIdInput] = useState<string>(
     currentId ? String(currentId) : ""
   );
@@ -58,12 +58,12 @@ export default function TodoManager() {
       <div className="mb-4">
         <div className="text-sm font-medium">Todos for ID: {currentId || "(none)"}</div>
         <ul className="list-disc pl-5 mt-2">
-          {items.length === 0 ? (
+          {todoItems.length === 0 ? (
             <li className="text-sm text-gray-500">No items</li>
           ) : (
-            items.map((it, i) => (
-              <li key={i} className="break-words">
-                {it}
+            todoItems.map((it, i) => (
+              <li key={i} className="wrap-break-word">
+                {it.text}
               </li>
             ))
           )}

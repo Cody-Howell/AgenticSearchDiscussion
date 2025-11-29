@@ -6,6 +6,8 @@ import Home from "./components/Home";
 import TodoManager from "./components/TodoManager";
 import FileManager from "./components/FileManager";
 import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import { StateProvider } from "./contexts/CurrentProvider";
 
 const onSigninCallback = (_user: User | void): void => {
   window.history.replaceState({}, document.title, window.location.pathname);
@@ -20,19 +22,24 @@ const oidcConfig = {
 function App() {
   return (
     <AuthProvider {...oidcConfig}>
-      <div className="bg-gray-100 min-h-screen">
-        <BrowserRouter>
-          <Navbar />
-          <div className="p-4">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/auth" element={<AuthSection />} />
-              <Route path="/todo" element={<TodoManager />} />
-              <Route path="/file" element={<FileManager />} />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </div>
+      <StateProvider>
+        <div className="bg-gray-100 min-h-screen">
+          <BrowserRouter>
+            <Navbar />
+            <div className="flex">
+              <Sidebar />
+              <div className="flex-1 p-4">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/auth" element={<AuthSection />} />
+                  <Route path="/todo" element={<TodoManager />} />
+                  <Route path="/file" element={<FileManager />} />
+                </Routes>
+              </div>
+            </div>
+          </BrowserRouter>
+        </div>
+      </StateProvider>
     </AuthProvider>
   );
 }
