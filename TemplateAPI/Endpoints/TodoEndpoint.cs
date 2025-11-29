@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using QuickType;
-using System.Text;
 using System.Linq;
+using System.Text;
 using TemplateAPI.Function;
 using TemplateAPI.Services;
 
@@ -37,35 +37,13 @@ public static class TodoEndpoint {
 
             Console.WriteLine("Received message: " + message);
 
-            string sysMessage = """
-            Take in an input from the user. The first message is the 
-            Break down the message into discrete chunks for an AI agent to read from, one at a time sequentially. 
-            Call the function until you've parsed the entire message and have no more items. See previous user messages 
-            for the result of your tool calls. Don't duplicate items.
-            Once done, provide a message to the user saying that you're done. Make it as short as possible. 
-            """;
+            string sysMessage = TemplateAPI.Classes.SystemMessages.TodoBreakdown;
             List<UserMessage> messages = new List<UserMessage>() {
                 new UserMessage { Role = "system", Content = sysMessage} ,
                 new UserMessage { Role = "user", Content = message }
             };
 
-            var functionTest = new Tool {
-                Type = "function",
-                Function = new CalledFunction {
-                    Name = "todo_list",
-                    Description = "Add to the todo list for an AI agent to stay focused.",
-                    Parameters = new Parameters {
-                        Type = "object",
-                        Properties = new Dictionary<string, ParameterDescription> {
-                            ["item"] = new ParameterDescription {
-                                Type = "string",
-                                Description = "The todo list item to add to the array."
-                            },
-                        },
-                        ParametersRequired = ["item"]
-                    }
-                }
-            };
+            var functionTest = TemplateAPI.Classes.TodoTools.GetTodoListTool();
 
             AiResponse aiResp;
             int count = 0;

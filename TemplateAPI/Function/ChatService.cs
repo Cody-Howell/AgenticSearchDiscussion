@@ -31,7 +31,7 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
         using var resp = await client.SendAsync(req);
         var respText = await resp.Content.ReadAsStringAsync();
 
-        Console.WriteLine(respText);
+        // Console.WriteLine(respText);
 
         if (!resp.IsSuccessStatusCode) {
             throw new HttpRequestException($"AI server returned {(int)resp.StatusCode}: {respText}");
@@ -70,7 +70,7 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
                 throw new JsonSerializationException("AI server returned empty or invalid JSON response.");
             }
             return aiResp;
-        } catch (Newtonsoft.Json.JsonException ex) {
+        } catch (JsonException ex) {
             throw new InvalidOperationException("Failed to parse AI server response.", ex);
         }
     }
