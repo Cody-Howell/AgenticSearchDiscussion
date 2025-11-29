@@ -5,6 +5,7 @@ import AuthSection from "./components/AuthComponent";
 import Home from "./components/Home";
 import TodoManager from "./components/TodoManager";
 import FileManager from "./components/FileManager";
+import Navbar from "./components/Navbar";
 
 const onSigninCallback = (_user: User | void): void => {
   window.history.replaceState({}, document.title, window.location.pathname);
@@ -14,20 +15,22 @@ const oidcConfig = {
   client_id: "cody-final",
   redirect_uri: "http://localhost:4110",
   onSigninCallback: onSigninCallback,
-  // ...
 };
 
 function App() {
   return (
     <AuthProvider {...oidcConfig}>
-      <div className="bg-gray-100 min-h-screen p-4">
+      <div className="bg-gray-100 min-h-screen">
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth" element={<AuthSection />} />
-            <Route path="/todo" element={<TodoManager />} />
-            <Route path="/file" element={<FileManager />} />
-          </Routes>
+          <Navbar />
+          <div className="p-4">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/auth" element={<AuthSection />} />
+              <Route path="/todo" element={<TodoManager />} />
+              <Route path="/file" element={<FileManager />} />
+            </Routes>
+          </div>
         </BrowserRouter>
       </div>
     </AuthProvider>
