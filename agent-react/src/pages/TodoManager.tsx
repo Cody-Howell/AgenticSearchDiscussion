@@ -17,7 +17,6 @@ export default function TodoManager() {
       await addItem(newText.trim());
       setNewText("");
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error(err);
       setError("Failed to add item");
     }

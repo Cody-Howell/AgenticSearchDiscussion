@@ -24,7 +24,7 @@ export function StateProvider({ children }: { children: ReactNode; }) {
                 message: t.text
             })));
         } catch (e) {
-            // eslint-disable-next-line no-console
+             
             console.error("Failed to load todos", e);
         }
     };
