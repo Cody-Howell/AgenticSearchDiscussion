@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import { AuthProvider } from "react-oidc-context";
 import type { User } from "oidc-client-ts";
-import AuthSection from "./components/AuthComponent";
-import Home from "./components/Home";
-import TodoManager from "./components/TodoManager";
-import FileManager from "./components/FileManager";
+import AuthSection from "./pages/AuthComponent";
+import Home from "./pages/Home";
+import TodoManager from "./pages/TodoManager";
+import FileManager from "./pages/FileManager";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import { StateProvider } from "./contexts/CurrentProvider";
