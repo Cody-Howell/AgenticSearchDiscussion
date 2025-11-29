@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: "./",
   build: {
-    outDir: "../TemplateAPI/wwwroot",
+    outDir: "../AgentAPI/wwwroot",
     emptyOutDir: true,
   },
   server: {
