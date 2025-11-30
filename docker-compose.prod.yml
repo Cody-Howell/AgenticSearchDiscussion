@@ -6,7 +6,7 @@ services:
    environment:
      POSTGRES_PASSWORD: 123456abc
      POSTGRES_USER: cody
-     POSTGRES_DB: templateAPIdb
+     POSTGRES_DB: agentDb
    networks:
       - internal
    volumes:
@@ -21,7 +21,7 @@ services:
     image: codyhowl/agentic-api:build-23
     restart: always
     environment:
-      - DOTNET_DATABASE_STRING=Host=db;Database=templateAPIdb;Username=cody;Password=123456abc;
+      - DOTNET_DATABASE_STRING=Host=db;Database=agentDb;Username=cody;Password=123456abc;
       - AI_TOKEN=${AI_TOKEN}
       - AI_SERVER_URL=https://ai-snow.reindeer-pinecone.ts.net/api/chat/completions
     networks:

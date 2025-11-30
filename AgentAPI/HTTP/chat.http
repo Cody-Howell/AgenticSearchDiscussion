@@ -1,16 +1,17 @@
 @TemplateAPI = http://localhost:4110/api
+@Id = 1
+@Message = Lorem message 2
 
+###
 GET {{TemplateAPI}}/health
-
 ###
-POST {{TemplateAPI}}/chat
-Content-Type: text/plain
-
-What's happening in the news right now?
+POST {{TemplateAPI}}/chats/create
 ###
-POST {{TemplateAPI}}/chat
-Content-Type: text/plain
-
-Hello! Write a short poem. 
+GET {{TemplateAPI}}/chats/{{Id}}/messages
 ###
+POST {{TemplateAPI}}/chats/{{Id}}/messages?message={{Message}}
+###
+DELETE {{TemplateAPI}}/chats/{{Id}}/messages/2
+###
+
 

@@ -6,12 +6,12 @@ services:
    environment:
      POSTGRES_PASSWORD: 123456abc
      POSTGRES_USER: cody
-     POSTGRES_DB: templateAPIdb
+     POSTGRES_DB: agentDb
    volumes:
      - ./sql:/docker-entrypoint-initdb.d
     #  - ./dbdata:/var/lib/postgresql/data
-   # ports:
-   #   - 5432:5432
+   ports:
+     - 5432:5432
    # command: ["postgres", "-c", "log_statement=all"] # Enables verbose logging
 
     
@@ -21,7 +21,7 @@ services:
       dockerfile: ./AgentAPI/Dockerfile
     restart: always
     environment:
-      - DOTNET_DATABASE_STRING=Host=db;Database=templateAPIdb;Username=cody;Password=123456abc;
+      - DOTNET_DATABASE_STRING=Host=db;Database=agentDb;Username=cody;Password=123456abc;
       - AI_TOKEN=${AI_TOKEN}
       - AI_SERVER_URL=https://ai-snow.reindeer-pinecone.ts.net/api/chat/completions
     depends_on:
