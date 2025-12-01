@@ -1,14 +1,10 @@
 import { createContext, useContext } from "react";
+import { TodoItem } from "../types/todos";
 
 export type Message = {
   type: string;
   role: string;
   message: string;
-};
-
-export type TodoItem = {
-  id: string;
-  text: string;
 };
 
 type CurrentContextType = {

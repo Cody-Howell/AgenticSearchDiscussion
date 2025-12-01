@@ -20,7 +20,8 @@ public class TodoService(WebSocketService svc) {
             Text = item,
         };
         value.Add(todo);
-        await svc.SendMessageAsync(id, JsonSerializer.Serialize(todo));
+        var message = JsonSerializer.Serialize(new { type = "todo_added", content = todo });
+        await svc.SendMessageAsync(id, message);
         return todo;
     }
 

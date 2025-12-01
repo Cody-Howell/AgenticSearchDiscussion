@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState, useRef } from "react";
-import { StateContext, Message, TodoItem } from "./CurrentContext";
+import { StateContext, Message } from "./CurrentContext";
 import { getTodos, addTodo } from "../api/todoApi";
+import { TodoItem, TodoItemSchema } from "../types/todos";
 
 
 export function StateProvider({ children }: { children: ReactNode; }) {
@@ -22,7 +23,7 @@ export function StateProvider({ children }: { children: ReactNode; }) {
             setItems(todos.map((t) => ({
                 type: "todo",
                 role: "user",
-                message: t.text
+                message: t.Text
             })));
         } catch (e) {
              
@@ -56,9 +57,10 @@ export function StateProvider({ children }: { children: ReactNode; }) {
             console.log('WebSocket message received:', event.data);
             try {
                 const data = JSON.parse(event.data);
-                // Handle incoming messages (e.g., real-time todo updates)
-                if (data.type === 'todo_update') {
-                    // refresh();
+                if (data.type === 'todo_added') {
+                    setTodoItems(items => 
+                    [...items, TodoItemSchema.parse(data.content)]
+                    )
                 }
                 // Add more message handlers as needed
             } catch (e) {

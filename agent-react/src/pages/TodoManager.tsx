@@ -52,7 +52,7 @@ export default function TodoManager() {
           ) : (
             todoItems.map((it, i) => (
               <li key={i} className="wrap-break-word">
-                {it.text}
+                {it.Text}
               </li>
             ))
           )}
