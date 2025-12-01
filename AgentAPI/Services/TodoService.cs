@@ -2,12 +2,14 @@ namespace TemplateAPI.Services;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using TemplateAPI.Classes;
 
-public class TodoService {
+public class TodoService(WebSocketService svc) {
     private readonly Dictionary<int, List<TodoItem>> todos = [];
 
-    public TodoItem AddTodoItem(int id, string item) {
+    public async Task<TodoItem> AddTodoItem(int id, string item) {
         if (!todos.TryGetValue(id, out List<TodoItem>? value)) {
             value = new List<TodoItem>();
             todos.Add(id, value);
@@ -18,6 +20,7 @@ public class TodoService {
             Text = item,
         };
         value.Add(todo);
+        await svc.SendMessageAsync(id, JsonSerializer.Serialize(todo));
         return todo;
     }
 

@@ -17,6 +17,7 @@ builder.Services.AddSingleton<IDbConnection>(provider => {
 
 builder.Services.AddSingleton<DBService>();
 builder.Services.AddSingleton<TodoService>();
+builder.Services.AddSingleton<WebSocketService>();
 // HTTP client and Chat service registration
 builder.Services.AddHttpClient();
 var aiServerUrl = builder.Configuration["AI_SERVER_URL"] ?? throw new InvalidOperationException("AI_SERVER_URL environment variable is not set.");
@@ -28,11 +29,13 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseWebSockets();
 
 app.MapGet("/api/health", () => "Hello");
 app.MapChatEndpoints()
     .MapTodoEndpoints()
-    .MapFileEndpoints();
+    .MapFileEndpoints()
+    .MapWebSocketEndpoints();
 
 
 app.MapFallbackToFile("index.html");
