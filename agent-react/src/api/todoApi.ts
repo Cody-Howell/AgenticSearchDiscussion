@@ -51,9 +51,20 @@ export async function deleteTodo(id: number, itemId?: string): Promise<void> {
     await handleResponse(res);
 }
 
+export async function breakTodo(id: number, message: string): Promise<void> {
+    await fetch(`/api/todo/${id}/break`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/plain"
+        },
+        body: message
+    });
+}
+
 export default {
     getTodos,
     getOldest,
     addTodo,
     deleteTodo,
+    breakTodo,
 };
