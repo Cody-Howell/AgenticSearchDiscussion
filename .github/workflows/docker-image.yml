@@ -33,7 +33,7 @@ jobs:
           # ./TemplateAPI as the context which caused "/TemplateAPI: not found".
           docker build -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:latest \
                        -t ${{ vars.DOCKERHUB_USERNAME }}/agentic-api:$TAG \
-                       -f ./TemplateAPI/Dockerfile .
+                       -f ./AgentAPI/Dockerfile .
 
       - name: Push Docker image
         run: |
