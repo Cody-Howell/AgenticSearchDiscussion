@@ -14,6 +14,7 @@ type CurrentContextType = {
   items: Message[];
   refresh: () => Promise<void>;
   addItem: (text: string) => Promise<void>;
+  deleteItem: (itemId: string) => Promise<void>;
 };
 
 export const StateContext = createContext<CurrentContextType | undefined>(undefined);

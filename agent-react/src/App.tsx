@@ -15,7 +15,7 @@ const onSigninCallback = (_user: User | void): void => {
 const oidcConfig = {
   authority: " https://auth-dev.snowse.io/realms/DevRealm",
   client_id: "cody-final",
-  redirect_uri: "http://localhost:4110",
+  redirect_uri: "https://agent.docker.codyhowell.dev",
   onSigninCallback: onSigninCallback,
 };
 

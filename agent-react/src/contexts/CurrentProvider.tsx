@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState, useRef } from "react";
 import { StateContext, Message } from "./CurrentContext";
-import { getTodos, addTodo } from "../api/todoApi";
+import { getTodos, addTodo, deleteTodo } from "../api/todoApi";
 import { TodoItem, TodoItemSchema } from "../types/todos";
 
 
@@ -97,9 +97,15 @@ export function StateProvider({ children }: { children: ReactNode; }) {
         await refresh();
     };
 
+    const deleteItem = async (itemId: string) => {
+        if (!currentId) throw new Error("Cannot delete item: currentId is not set");
+        await deleteTodo(currentId, itemId);
+        await refresh();
+    };
+
     return (
         <StateContext.Provider
-            value={{ currentId, setCurrentId, todoItems, items, refresh, addItem }}
+            value={{ currentId, setCurrentId, todoItems, items, refresh, addItem, deleteItem }}
         >
             {children}
         </StateContext.Provider>

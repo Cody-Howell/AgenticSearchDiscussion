@@ -12,7 +12,6 @@ export default function FileManager() {
   const [paths, setPaths] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<string>("");
 
-  const [fileText, setFileText] = useState<string>("");
   const [editedText, setEditedText] = useState<string>("");
 
   const [loading, setLoading] = useState<{
@@ -20,7 +19,6 @@ export default function FileManager() {
     paths?: boolean;
     file?: boolean;
   }>({});
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -34,7 +32,7 @@ export default function FileManager() {
           setSelectedFolder(list[0]);
         }
       })
-      .catch((err) => setError(err.message))
+      .catch((err) => console.error(err.message))
       .finally(() => setLoading((l) => ({ ...l, folders: false })));
     return () => {
       mounted = false;
@@ -46,12 +44,10 @@ export default function FileManager() {
     if (!selectedFolder) {
       setPaths([]);
       setSelectedPath("");
-      setFileText("");
       setEditedText("");
       return;
     }
     setLoading((l) => ({ ...l, paths: true }));
-    setError(null);
     getFilesInFolder(selectedFolder)
       .then((list) => {
         setPaths(list || []);
@@ -59,16 +55,13 @@ export default function FileManager() {
           setSelectedPath(list[0]);
         } else {
           setSelectedPath("");
-          setFileText("");
           setEditedText("");
         }
       })
-      .catch((err) => {
+      .catch((_) => {
         setPaths([]);
         setSelectedPath("");
-        setFileText("");
         setEditedText("");
-        setError(err.message);
       })
       .finally(() => setLoading((l) => ({ ...l, paths: false })));
   }, [selectedFolder]);
@@ -76,21 +69,16 @@ export default function FileManager() {
   useEffect(() => {
     // when selectedPath changes, fetch file contents
     if (!selectedFolder || !selectedPath) {
-      setFileText("");
       setEditedText("");
       return;
     }
     setLoading((l) => ({ ...l, file: true }));
-    setError(null);
     getFileContents(selectedFolder, selectedPath)
       .then((text) => {
-        setFileText(text);
         setEditedText(text);
       })
-      .catch((err) => {
-        setFileText("");
+      .catch((_) => {
         setEditedText("");
-        setError(err.message);
       })
       .finally(() => setLoading((l) => ({ ...l, file: false })));
   }, [selectedFolder, selectedPath]);
@@ -147,29 +135,9 @@ export default function FileManager() {
         {loading.file ? <div>Loading file…</div> : null}
         <textarea
           value={editedText}
-          onChange={(e) => setEditedText(e.target.value)}
           rows={20}
           style={{ width: "100%", fontFamily: "monospace", fontSize: 13 }}
         />
-      </div>
-
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <button
-          onClick={() => {
-            // overwrite the in-memory fileText with editedText
-            setFileText(editedText);
-          }}
-          disabled={editedText === fileText}
-        >
-          Overwrite in state
-        </button>
-        <div style={{ color: "gray" }}>
-          {error ? (
-            <span style={{ color: "crimson" }}>{error}</span>
-          ) : (
-            <span>In-memory file length: {fileText.length}</span>
-          )}
-        </div>
       </div>
     </div>
   );

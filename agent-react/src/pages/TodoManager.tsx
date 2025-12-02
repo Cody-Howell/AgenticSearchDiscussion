@@ -3,7 +3,7 @@ import { useCurrent } from "../contexts/CurrentContext";
 import { breakTodo } from "../api/todoApi";
 
 export default function TodoManager() {
-  const { currentId, todoItems, addItem } = useCurrent();
+  const { currentId, todoItems, addItem, deleteItem } = useCurrent();
   const [newText, setNewText] = useState("");
   const [breakMessage, setBreakMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -41,18 +41,35 @@ export default function TodoManager() {
     }
   };
 
+  const onDelete = async (itemId: string) => {
+    try {
+      await deleteItem(itemId);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to delete item");
+    }
+  };
+
   return (
     <div className="p-4 border rounded-md max-w-lg">
       {error ? <div className="text-red-600 mb-2">{error}</div> : null}
 
       <div className="mb-4">
-        <ul className="list-disc pl-5 mt-2">
+        <ul className="space-y-2 mt-2">
           {todoItems.length === 0 ? (
             <li className="text-sm text-gray-500">No items</li>
           ) : (
             todoItems.map((it, i) => (
-              <li key={i} className="wrap-break-word">
-                {it.Text}
+              <li key={i} className="flex items-center gap-2 group">
+                <span className="flex-1 wrap-break-word">{it.Text}</span>
+                <button
+                  onClick={() => onDelete(it.Id)}
+                  className="text-red-600 hover:text-red-800 hover:bg-red-50 rounded px-2 py-1 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label="Delete todo"
+                >
+                  ✕
+                </button>
               </li>
             ))
           )}
@@ -75,7 +92,7 @@ export default function TodoManager() {
       </form>
 
       <div className="mt-4 pt-4 border-t">
-        <h3 className="text-lg font-semibold mb-2">Break Analysis</h3>
+        <h3 className="text-lg font-semibold mb-2">Break A Paragraph</h3>
         <form onSubmit={onBreak} className="flex flex-col gap-2">
           <textarea
             className="w-full p-2 border rounded"
