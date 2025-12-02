@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using TemplateAPI;
 using TemplateAPI.Classes;
 using TemplateAPI.Endpoints;
@@ -24,12 +28,39 @@ var aiServerUrl = builder.Configuration["AI_SERVER_URL"] ?? throw new InvalidOpe
 builder.Services.AddSingleton(new ChatServiceConfig { ServerUrl = aiServerUrl, AiToken = AI_TOKEN });
 builder.Services.AddSingleton<IChatService, ChatService>();
 
+// builder.Services.AddAuthentication(options =>
+// {
+//     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+// })
+// .AddCookie()
+// .AddOpenIdConnect(options =>
+// {
+//     var oidcConfig = builder.Configuration.GetSection("OpenIDConnectSettings");
+
+//     options.Authority = oidcConfig["Authority"];
+//     options.ClientId = oidcConfig["ClientId"];
+//     options.ClientSecret = oidcConfig["ClientSecret"];
+
+//     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//     options.ResponseType = OpenIdConnectResponseType.Code;
+
+//     options.SaveTokens = true;
+//     options.GetClaimsFromUserInfoEndpoint = true;
+
+//     options.MapInboundClaims = false;
+//     options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
+//     options.TokenValidationParameters.RoleClaimType = "roles";
+// });
+
 var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseWebSockets();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/api/health", () => "Hello");
 app.MapChatEndpoints()
@@ -37,6 +68,7 @@ app.MapChatEndpoints()
     .MapFileEndpoints()
     .MapWebSocketEndpoints();
 
+app.MapGet("/api/auth", () => "Authorized").RequireAuthorization();
 
 app.MapFallbackToFile("index.html");
 
