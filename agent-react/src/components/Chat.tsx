@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MarkdownDisplay } from './MarkdownDisplay';
 import { Message } from '../types/chats';
 
@@ -10,6 +10,34 @@ interface ChatProps {
 
 export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, className = '' }) => {
     const [inputText, setInputText] = useState('');
+    const [collapsedMessages, setCollapsedMessages] = useState<Set<number>>(new Set());
+
+    // Auto-collapse tool calls and tool results when new messages arrive
+    useEffect(() => {
+        const newCollapsed = new Set(collapsedMessages);
+        messages.forEach((message) => {
+            const messageType = message.Type.toLowerCase();
+            if ((messageType.includes('tool') || messageType === 'tool_use' || messageType === 'tool_result') 
+                && !collapsedMessages.has(message.Id)) {
+                newCollapsed.add(message.Id);
+            }
+        });
+        if (newCollapsed.size !== collapsedMessages.size) {
+            setCollapsedMessages(newCollapsed);
+        }
+    }, [messages]);
+
+    const handleDoubleClick = (messageId: number) => {
+        setCollapsedMessages((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(messageId)) {
+                newSet.delete(messageId);
+            } else {
+                newSet.add(messageId);
+            }
+            return newSet;
+        });
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,21 +58,30 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, className =
                     messages.map((message) => (
                         <div 
                             key={message.Id} 
-                            className={`p-4 rounded-lg break-words whitespace-pre-wrap ${
+                            className={`p-4 rounded-lg break-words whitespace-pre-wrap cursor-pointer ${
                                 message.Role.toLowerCase() === 'user' 
                                     ? 'bg-blue-50 ml-8' 
                                     : 'bg-gray-50 mr-8'
                             }`}
+                            onDoubleClick={() => handleDoubleClick(message.Id)}
                         >
                             <div className="flex gap-2 mb-2 text-xs text-gray-600">
                                 <span className="font-semibold">{message.Role}</span>
                                 <span>•</span>
                                 <span>{message.Type}</span>
+                                {collapsedMessages.has(message.Id) && (
+                                    <>
+                                        <span>•</span>
+                                        <span className="italic">collapsed</span>
+                                    </>
+                                )}
                             </div>
-                            <MarkdownDisplay 
-                                value={message.MessageText} 
-                                className="prose prose-sm max-w-none break-words"
-                            />
+                            {!collapsedMessages.has(message.Id) && (
+                                <MarkdownDisplay 
+                                    value={message.MessageText} 
+                                    className="prose prose-sm max-w-none break-words"
+                                />
+                            )}
                         </div>
                     ))
                 )}
