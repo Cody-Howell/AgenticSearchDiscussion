@@ -57,6 +57,7 @@ export default function Navbar() {
     JSON.stringify({ title: "Auth", path: "/auth" }),
     JSON.stringify({ title: "Todo", path: "/todo" }),
     JSON.stringify({ title: "Files", path: "/file" }),
+    JSON.stringify({ title: "Chat", path: "/chat" }),
   ];
 
   return <GenericNavbar items={navItems} />;

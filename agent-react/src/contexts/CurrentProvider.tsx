@@ -1,33 +1,43 @@
 import { ReactNode, useEffect, useState, useRef } from "react";
-import { StateContext, Message } from "./CurrentContext";
+import { StateContext } from "./CurrentContext";
 import { getTodos, addTodo, deleteTodo } from "../api/todoApi";
 import { TodoItem, TodoItemSchema } from "../types/todos";
+import { getMessages, addMessage } from "../api/chatApi";
+import { Message as ChatMessage } from "../types/chats";
 
 
 export function StateProvider({ children }: { children: ReactNode; }) {
     const [currentId, setCurrentId] = useState<number>(0);
     const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
-    const [items, setItems] = useState<Message[]>([]);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const wsRef = useRef<WebSocket | null>(null);
 
     const refresh = async () => {
         if (!currentId) {
             setTodoItems([]);
-            setItems([]);
+            setChatMessages([]);
             return;
         }
         try {
             const todos = await getTodos(currentId);
             console.log(todos);
             setTodoItems(todos);
-            setItems(todos.map((t) => ({
-                type: "todo",
-                role: "user",
-                message: t.Text
-            })));
         } catch (e) {
              
             console.error("Failed to load todos", e);
+        }
+    };
+
+    const refreshChat = async () => {
+        if (!currentId) {
+            setChatMessages([]);
+            return;
+        }
+        try {
+            const messages = await getMessages(currentId);
+            setChatMessages(messages);
+        } catch (e) {
+            console.error("Failed to load chat messages", e);
         }
     };
 
@@ -103,9 +113,15 @@ export function StateProvider({ children }: { children: ReactNode; }) {
         await refresh();
     };
 
+    const addChatMessage = async (text: string) => {
+        if (!currentId) throw new Error("Cannot add message: currentId is not set");
+        await addMessage(currentId, text);
+        await refreshChat();
+    };
+
     return (
         <StateContext.Provider
-            value={{ currentId, setCurrentId, todoItems, items, refresh, addItem, deleteItem }}
+            value={{ currentId, setCurrentId, todoItems, chatMessages, refresh, addItem, deleteItem, addChatMessage, refreshChat }}
         >
             {children}
         </StateContext.Provider>

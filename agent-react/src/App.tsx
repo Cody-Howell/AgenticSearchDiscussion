@@ -5,6 +5,7 @@ import AuthSection from "./pages/AuthComponent";
 import Home from "./pages/Home";
 import TodoManager from "./pages/TodoManager";
 import FileManager from "./pages/FileManager";
+import ChatPage from "./pages/ChatPage";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import { StateProvider } from "./contexts/CurrentProvider";
@@ -34,6 +35,7 @@ function App() {
                   <Route path="/auth" element={<AuthSection />} />
                   <Route path="/todo" element={<TodoManager />} />
                   <Route path="/file" element={<FileManager />} />
+                  <Route path="/chat" element={<ChatPage />} />
                 </Routes>
               </div>
             </div>
