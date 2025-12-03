@@ -18,8 +18,8 @@ public static class TodoEndpoint {
             return service.GetOldestItem(id);
         });
 
-        app.MapPost("/api/todo/{id}", ([FromServices] TodoService service, int id, string item) => {
-            service.AddTodoItem(id, item);
+        app.MapPost("/api/todo/{id}", async ([FromServices] TodoService service, int id, string item) => {
+            await service.AddTodoItem(id, item);
             return Results.Ok();
         });
 
@@ -46,99 +46,12 @@ public static class TodoEndpoint {
             var functionTest = TemplateAPI.Classes.TodoTools.GetTodoListTool();
 
             AiResponse aiResp;
-            int count = 0;
             try {
-                while (true) {
-                    Console.WriteLine("\n\n\n------Starting New Iteration--------");
-                    if (count < 8) {
-                        aiResp = await chatService.SendMessageAsync([.. messages], [functionTest]);
-                    } else {
-                        aiResp = await chatService.SendMessageAsync([.. messages], []);
-                    }
-
-                    if (aiResp?.Choices == null || aiResp.Choices.Length == 0) break;
-                    if (aiResp.Choices[0].FinishReason != "tool_calls") break;
-
-                    var toolCall = aiResp.Choices[0].ToolCalls?.FirstOrDefault();
-                    if (toolCall == null || toolCall.Function == null) break;
-
-                    var argsJson = toolCall.Function.Arguments ?? string.Empty;
-                    string? itemArg = null;
-
-                    // Console.WriteLine(Serialize.ToJson(aiResp));
-
-                    // If the tool call is an assistant instruction, add it as an assistant message
-                    if (toolCall.Function.Name == "assistant_instruction") {
-                        string? instruction = null;
-                        try {
-                            var dictInst = JsonConvert.DeserializeObject<Dictionary<string, string>>(argsJson);
-                            if (dictInst != null && dictInst.TryGetValue("instruction", out var v)) instruction = v;
-                        } catch { }
-
-                        if (instruction == null) {
-                            try {
-                                var joInst = JObject.Parse(argsJson);
-                                instruction = joInst["instruction"]?.ToString();
-                            } catch { }
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(instruction)) {
-                            messages.Add(new UserMessage { Role = "assistant", Content = instruction });
-                            // continue to next iteration so instruction can influence subsequent calls
-                            count++;
-                            continue;
-                        }
-                        // if we couldn't extract an instruction, fall through and treat as raw assistant content
-                    }
-                    try {
-                        var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(argsJson);
-                        if (dict != null && dict.TryGetValue("item", out var v)) itemArg = v;
-                    } catch { }
-
-                    if (itemArg == null) {
-                        try {
-                            var jo = JObject.Parse(argsJson);
-                            itemArg = jo["item"]?.ToString();
-                        } catch { }
-                    }
-
-                    if (string.IsNullOrWhiteSpace(itemArg)) {
-                        // If we couldn't extract an item, add the raw args as an assistant message and stop looping
-                        messages.Add(new UserMessage { Role = "assistant", Content = argsJson });
-                        break;
-                    }
-
-                    // Call the TodoService to add the item
-                    todos.AddTodoItem(id, itemArg);
-
-                    // First, append an assistant message representing the function/tool call
-                    // so the AI server sees the assistant initiated a tool call.
-                    messages.Add(new UserMessage {
-                        Role = "assistant",
-                        ToolCalls = new[] {
-                            new {
-                                type = "function",
-                                function = new {
-                                    name = toolCall.Function.Name,
-                                    arguments = argsJson
-                                },
-                                id = toolCall.Id
-                            }
-                        }
-                    });
-
-                    // Then append the added item as a `tool` message including the tool_call_id
-                    // Content is JSON so the AI can parse a structured result.
-                    messages.Add(new UserMessage {
-                        Role = "tool",
-                        ToolCallId = toolCall.Id,
-                        Content = JsonConvert.SerializeObject(new { status = "success", message = "Item added successfully.", item = itemArg })
-                    });
-                    foreach (var item in messages) {
-                        Console.WriteLine($"Role: {item.Role}, Content: {item.Content}");
-                    }
-                    count++;
-                }
+                aiResp = await chatService.ProcessTodoBreakdownAsync(
+                    messages,
+                    functionTest,
+                    async (item) => await todos.AddTodoItem(id, item)
+                );
             } catch (Exception ex) {
                 httpContext.Response.StatusCode = 502;
                 await httpContext.Response.WriteAsync($"Error calling AI server: {ex.Message}");

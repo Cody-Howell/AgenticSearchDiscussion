@@ -59,8 +59,8 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseWebSockets();
-app.UseAuthentication();
-app.UseAuthorization();
+// app.UseAuthentication();
+// app.UseAuthorization();
 
 app.MapGet("/api/health", () => "Hello");
 app.MapChatEndpoints()
