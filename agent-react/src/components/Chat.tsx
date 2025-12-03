@@ -67,7 +67,7 @@ export const Chat: FC<ChatProps> = ({ messages, onSendMessage, className = '' })
                     messages.map((message) => (
                         <div 
                             key={message.Id} 
-                            className={`p-4 rounded-lg break-words whitespace-pre-wrap cursor-pointer ${
+                            className={`p-4 rounded-lg wrap-break-word whitespace-pre-wrap cursor-pointer ${
                                 message.Role.toLowerCase() === 'user' 
                                     ? 'bg-blue-50 ml-8' 
                                     : 'bg-gray-50 mr-8'
@@ -88,7 +88,7 @@ export const Chat: FC<ChatProps> = ({ messages, onSendMessage, className = '' })
                             {!collapsedMessages.has(message.Id) && (
                                 <MarkdownDisplay 
                                     value={message.MessageText} 
-                                    className="prose prose-sm max-w-none break-words"
+                                    className="prose prose-sm max-w-none wrap-break-word"
                                 />
                             )}
                         </div>
