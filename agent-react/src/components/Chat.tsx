@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { MarkdownDisplay } from './MarkdownDisplay';
 import { Message } from '../types/chats';
 
@@ -8,24 +8,31 @@ interface ChatProps {
     className?: string;
 }
 
-export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, className = '' }) => {
+export const Chat: FC<ChatProps> = ({ messages, onSendMessage, className = '' }) => {
     const [inputText, setInputText] = useState('');
     const [collapsedMessages, setCollapsedMessages] = useState<Set<number>>(new Set());
+    const [processedMessageIds, setProcessedMessageIds] = useState<Set<number>>(new Set());
 
     // Auto-collapse tool calls and tool results when new messages arrive
     useEffect(() => {
-        const newCollapsed = new Set(collapsedMessages);
-        messages.forEach((message) => {
-            const messageType = message.Type.toLowerCase();
-            if ((messageType.includes('tool') || messageType === 'tool_use' || messageType === 'tool_result') 
-                && !collapsedMessages.has(message.Id)) {
-                newCollapsed.add(message.Id);
-            }
-        });
-        if (newCollapsed.size !== collapsedMessages.size) {
-            setCollapsedMessages(newCollapsed);
+        const currentMessageIds = new Set(messages.map(m => m.Id));
+        const newMessageIds = messages.filter(m => !processedMessageIds.has(m.Id));
+        
+        if (newMessageIds.length > 0) {
+            setCollapsedMessages((prevCollapsed) => {
+                const newCollapsed = new Set(prevCollapsed);
+                newMessageIds.forEach((message) => {
+                    const messageType = message.Type.toLowerCase();
+                    if (messageType.includes('tool') || messageType === 'tool_use' || messageType === 'tool_result') {
+                        newCollapsed.add(message.Id);
+                    }
+                });
+                return newCollapsed;
+            });
+            
+            setProcessedMessageIds(currentMessageIds);
         }
-    }, [messages]);
+    }, [messages, processedMessageIds]);
 
     const handleDoubleClick = (messageId: number) => {
         setCollapsedMessages((prev) => {
@@ -46,6 +53,8 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, className =
             setInputText('');
         }
     };
+
+    console.log(collapsedMessages);
 
     return (
         <div className={`flex flex-col h-full ${className}`}>
