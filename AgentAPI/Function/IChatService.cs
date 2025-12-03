@@ -13,6 +13,7 @@ namespace TemplateAPI.Function {
             Tool[] fileTools,
             Func<string, string, Task<string>> getFileContentsCallback,
             Func<string, Task<string[]>> getFilesInFolderCallback,
-            Func<Task<string[]>> getTopLevelFoldersCallback);
+            Func<Task<string[]>> getTopLevelFoldersCallback,
+            Func<UserMessage, Task>? onProgress = null);
     }
 }

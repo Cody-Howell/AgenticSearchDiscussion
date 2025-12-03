@@ -99,51 +99,41 @@ public static class ChatEndpoint {
                     },
                     async () => {
                         return await Task.Run(() => Services.FileService.GetTopLevelFolders(env));
+                    },
+                    async (UserMessage progressMsg) => {
+                        if (progressMsg.Role == "assistant" && progressMsg.ToolCalls != null) {
+                            var toolCallJson = JsonConvert.SerializeObject(progressMsg.ToolCalls);
+                            var toolCallDb = new DBMessage {
+                                ChatId = chatId,
+                                MessageText = toolCallJson,
+                                Role = "assistant",
+                                Type = "tool_call"
+                            };
+                            await db.AddMessageAsync(toolCallDb);
+                            await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
+                                type = "chat_message",
+                                content = toolCallDb
+                            }));
+                        } else if (progressMsg.Role == "tool") {
+                            var toolResultDb = new DBMessage {
+                                ChatId = chatId,
+                                MessageText = progressMsg.Content ?? string.Empty,
+                                Role = "tool",
+                                Type = "tool_result"
+                            };
+                            await db.AddMessageAsync(toolResultDb);
+                            await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
+                                type = "chat_message",
+                                content = toolResultDb
+                            }));
+                        }
                     }
                 );
             } catch (Exception ex) {
                 return Results.InternalServerError($"Error calling AI server: {ex.Message}");
             }
             
-            // Store all tool calls and tool responses from the conversation
-            // Skip the first message (system) and messages we already have in DB
-            int skipCount = previousMessages.Count() + 1;
-            for (int i = skipCount; i < conversationHistory.Count; i++) {
-                var msg = conversationHistory[i];
-                
-                if (msg.Role == "assistant" && msg.ToolCalls != null) {
-                    // Store function call
-                    var toolCallJson = JsonConvert.SerializeObject(msg.ToolCalls);
-                    DBMessage toolCallMsg = new () {
-                        ChatId = chatId, 
-                        MessageText = toolCallJson, 
-                        Role = "assistant", 
-                        Type = "tool_call"
-                    };
-                    await db.AddMessageAsync(toolCallMsg);
-                    
-                    // Send WebSocket notification for tool call
-                    await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
-                        type = "chat_message",
-                        content = toolCallMsg
-                    }));
-                } else if (msg.Role == "tool") {
-                    // Store tool response
-                    DBMessage toolResultMsg = new () {
-                        ChatId = chatId, 
-                        MessageText = msg.Content ?? "", 
-                        Role = "tool", 
-                        Type = "tool_result"
-                    };
-                    await db.AddMessageAsync(toolResultMsg);
-                    
-                    // Send WebSocket notification for tool result
-                    await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
-                        type = "chat_message",
-                        content = toolResultMsg
-                    }));
-                }
-            }
+            // Tool call/result updates are streamed via onProgress above.
             
             // Store AI response
             if (aiResp?.Choices != null && aiResp.Choices.Length > 0) {

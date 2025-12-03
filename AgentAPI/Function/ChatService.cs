@@ -185,7 +185,8 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
         Tool[] fileTools,
         Func<string, string, Task<string>> getFileContentsCallback,
         Func<string, Task<string[]>> getFilesInFolderCallback,
-        Func<Task<string[]>> getTopLevelFoldersCallback) {
+        Func<Task<string[]>> getTopLevelFoldersCallback,
+        Func<UserMessage, Task>? onProgress = null) {
         
         AiResponse aiResp;
         
@@ -269,7 +270,7 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             }
 
             // Append assistant message with the tool call
-            messages.Add(new UserMessage {
+            var assistantToolCall = new UserMessage {
                 Role = "assistant",
                 ToolCalls = new[] {
                     new {
@@ -281,14 +282,18 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
                         id = toolCall.Id
                     }
                 }
-            });
+            };
+            messages.Add(assistantToolCall);
+            if (onProgress != null) await onProgress(assistantToolCall);
 
             // Append tool result
-            messages.Add(new UserMessage {
+            var toolResult = new UserMessage {
                 Role = "tool",
                 ToolCallId = toolCall.Id,
                 Content = resultContent
-            });
+            };
+            messages.Add(toolResult);
+            if (onProgress != null) await onProgress(toolResult);
             
             foreach (var item in messages) {
                 Console.WriteLine($"Role: {item.Role}, Content: {item.Content}");
