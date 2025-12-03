@@ -17,7 +17,7 @@ export default function EditableItem({
 }: EditableItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(title);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -40,7 +40,7 @@ export default function EditableItem({
     setIsEditing(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
       inputRef.current?.blur();
     } else if (e.key === "Escape") {
@@ -52,9 +52,8 @@ export default function EditableItem({
   if (isEditing) {
     return (
       <li>
-        <input
+        <textarea
           ref={inputRef}
-          type="text"
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
           onBlur={handleBlur}

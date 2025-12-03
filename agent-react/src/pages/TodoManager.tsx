@@ -1,4 +1,5 @@
 import { useState, FormEvent } from "react";
+import EditableItem from "../components/EditableItem";
 import { useCurrent } from "../contexts/CurrentContext";
 import { breakTodo } from "../api/todoApi";
 
@@ -51,6 +52,17 @@ export default function TodoManager() {
     }
   };
 
+  const onUpdate = async (id: string, newText: string) => {
+    if (!newText.trim() || !currentId) return;
+    try {
+      await addItem(newText.trim());
+      await deleteItem(id);
+      setError(null);
+    } catch (err) {
+      setError("Failed to update item");
+    }
+  };
+
   return (
     <div className="p-4 border rounded-md max-w-lg">
       {error ? <div className="text-red-600 mb-2">{error}</div> : null}
@@ -61,8 +73,14 @@ export default function TodoManager() {
             <li className="text-sm text-gray-500">No items</li>
           ) : (
             todoItems.map((it, i) => (
-              <li key={i} className="flex items-center gap-2 group">
-                <span className="flex-1 wrap-break-word">{it.Text}</span>
+              <div key={i} className="flex items-center gap-2 group w-full">
+                <EditableItem
+                  id={i}
+                  title={it.Text}
+                  isActive={false}
+                  onClick={() => {}}
+                  onUpdate={(_, newTitle) => onUpdate(it.Id, newTitle)}
+                />
                 <button
                   onClick={() => onDelete(it.Id)}
                   className="text-red-600 hover:text-red-800 hover:bg-red-50 rounded px-2 py-1 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
@@ -70,7 +88,7 @@ export default function TodoManager() {
                 >
                   ✕
                 </button>
-              </li>
+              </div>
             ))
           )}
         </ul>
