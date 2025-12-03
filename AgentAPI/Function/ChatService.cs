@@ -179,4 +179,122 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
         
         return aiResp;
     }
+
+    public async Task<AiResponse> ProcessChatWithFileToolsAsync(
+        List<UserMessage> messages,
+        Tool[] fileTools,
+        Func<string, string, Task<string>> getFileContentsCallback,
+        Func<string, Task<string[]>> getFilesInFolderCallback,
+        Func<Task<string[]>> getTopLevelFoldersCallback) {
+        
+        AiResponse aiResp;
+        
+        while (true) {
+            Console.WriteLine("\n\n\n------Starting Chat Iteration--------");
+            aiResp = await SendMessageAsync([.. messages], fileTools);
+
+            if (aiResp?.Choices == null || aiResp.Choices.Length == 0) break;
+            if (aiResp.Choices[0].FinishReason != "tool_calls") break;
+
+            var toolCall = aiResp.Choices[0].ToolCalls?.FirstOrDefault();
+            if (toolCall == null || toolCall.Function == null) break;
+
+            var argsJson = toolCall.Function.Arguments ?? string.Empty;
+            var functionName = toolCall.Function.Name;
+
+            string resultContent;
+            
+            try {
+                switch (functionName) {
+                    case "get_top_level_folders": {
+                        var folders = await getTopLevelFoldersCallback();
+                        resultContent = JsonConvert.SerializeObject(new { status = "success", folders });
+                        break;
+                    }
+                    case "get_files_in_folder": {
+                        string? folder = null;
+                        try {
+                            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(argsJson);
+                            if (dict != null && dict.TryGetValue("folder", out var v)) folder = v;
+                        } catch { }
+
+                        if (folder == null) {
+                            try {
+                                var jo = Newtonsoft.Json.Linq.JObject.Parse(argsJson);
+                                folder = jo["folder"]?.ToString();
+                            } catch { }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(folder)) {
+                            resultContent = JsonConvert.SerializeObject(new { status = "error", message = "folder parameter is required" });
+                        } else {
+                            var files = await getFilesInFolderCallback(folder);
+                            resultContent = JsonConvert.SerializeObject(new { status = "success", folder, files });
+                        }
+                        break;
+                    }
+                    case "get_file_contents": {
+                        string? folder = null;
+                        string? relpath = null;
+                        try {
+                            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(argsJson);
+                            if (dict != null) {
+                                dict.TryGetValue("folder", out folder);
+                                dict.TryGetValue("relpath", out relpath);
+                            }
+                        } catch { }
+
+                        if (folder == null || relpath == null) {
+                            try {
+                                var jo = Newtonsoft.Json.Linq.JObject.Parse(argsJson);
+                                folder = jo["folder"]?.ToString();
+                                relpath = jo["relpath"]?.ToString();
+                            } catch { }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(folder) || string.IsNullOrWhiteSpace(relpath)) {
+                            resultContent = JsonConvert.SerializeObject(new { status = "error", message = "folder and relpath parameters are required" });
+                        } else {
+                            var contents = await getFileContentsCallback(folder, relpath);
+                            resultContent = JsonConvert.SerializeObject(new { status = "success", folder, relpath, contents });
+                        }
+                        break;
+                    }
+                    default:
+                        resultContent = JsonConvert.SerializeObject(new { status = "error", message = $"Unknown function: {functionName}" });
+                        break;
+                }
+            } catch (Exception ex) {
+                resultContent = JsonConvert.SerializeObject(new { status = "error", message = ex.Message });
+            }
+
+            // Append assistant message with the tool call
+            messages.Add(new UserMessage {
+                Role = "assistant",
+                ToolCalls = new[] {
+                    new {
+                        type = "function",
+                        function = new {
+                            name = functionName,
+                            arguments = argsJson
+                        },
+                        id = toolCall.Id
+                    }
+                }
+            });
+
+            // Append tool result
+            messages.Add(new UserMessage {
+                Role = "tool",
+                ToolCallId = toolCall.Id,
+                Content = resultContent
+            });
+            
+            foreach (var item in messages) {
+                Console.WriteLine($"Role: {item.Role}, Content: {item.Content}");
+            }
+        }
+        
+        return aiResp;
+    }
 }

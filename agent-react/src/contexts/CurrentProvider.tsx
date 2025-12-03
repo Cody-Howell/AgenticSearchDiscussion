@@ -2,14 +2,15 @@ import { ReactNode, useEffect, useState, useRef } from "react";
 import { StateContext } from "./CurrentContext";
 import { getTodos, addTodo, deleteTodo } from "../api/todoApi";
 import { TodoItem, TodoItemSchema } from "../types/todos";
-import { getMessages, addMessage } from "../api/chatApi";
-import { Message as ChatMessage } from "../types/chats";
+import { getMessages, addMessage, getAllChats, createChat as apiCreateChat, updateChatTitle as apiUpdateChatTitle } from "../api/chatApi";
+import { Message as ChatMessage, Chat } from "../types/chats";
 
 
 export function StateProvider({ children }: { children: ReactNode; }) {
     const [currentId, setCurrentId] = useState<number>(0);
     const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+    const [chats, setChats] = useState<Chat[]>([]);
     const wsRef = useRef<WebSocket | null>(null);
 
     const refresh = async () => {
@@ -38,6 +39,34 @@ export function StateProvider({ children }: { children: ReactNode; }) {
             setChatMessages(messages);
         } catch (e) {
             console.error("Failed to load chat messages", e);
+        }
+    };
+
+    const refreshChats = async () => {
+        try {
+            const allChats = await getAllChats();
+            setChats(allChats);
+        } catch (e) {
+            console.error("Failed to load chats", e);
+        }
+    };
+
+    const createChat = async () => {
+        try {
+            const result = await apiCreateChat();
+            await refreshChats();
+            setCurrentId(result.id);
+        } catch (e) {
+            console.error("Failed to create chat", e);
+        }
+    };
+
+    const updateChatTitle = async (chatId: number, title: string) => {
+        try {
+            await apiUpdateChatTitle(chatId, title);
+            await refreshChats();
+        } catch (e) {
+            console.error("Failed to update chat title", e);
         }
     };
 
@@ -101,6 +130,10 @@ export function StateProvider({ children }: { children: ReactNode; }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentId]);
 
+    useEffect(() => {
+        void refreshChats();
+    }, []);
+
     const addItem = async (text: string) => {
         if (!currentId) throw new Error("Cannot add item: currentId is not set");
         await addTodo(currentId, text);
@@ -116,12 +149,11 @@ export function StateProvider({ children }: { children: ReactNode; }) {
     const addChatMessage = async (text: string) => {
         if (!currentId) throw new Error("Cannot add message: currentId is not set");
         await addMessage(currentId, text);
-        await refreshChat();
     };
 
     return (
         <StateContext.Provider
-            value={{ currentId, setCurrentId, todoItems, chatMessages, refresh, addItem, deleteItem, addChatMessage, refreshChat }}
+            value={{ currentId, setCurrentId, todoItems, chatMessages, chats, refresh, addItem, deleteItem, addChatMessage, refreshChat, createChat, refreshChats, updateChatTitle }}
         >
             {children}
         </StateContext.Provider>

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { TodoItem } from "../types/todos";
-import { Message as ChatMessage } from "../types/chats";
+import { Message as ChatMessage, Chat } from "../types/chats";
 
 export type Message = {
   type: string;
@@ -13,11 +13,15 @@ type CurrentContextType = {
   setCurrentId: (id: number) => void;
   todoItems: TodoItem[];
   chatMessages: ChatMessage[];
+  chats: Chat[];
   refresh: () => Promise<void>;
   addItem: (text: string) => Promise<void>;
   deleteItem: (itemId: string) => Promise<void>;
   addChatMessage: (text: string) => Promise<void>;
   refreshChat: () => Promise<void>;
+  createChat: () => Promise<void>;
+  refreshChats: () => Promise<void>;
+  updateChatTitle: (chatId: number, title: string) => Promise<void>;
 };
 
 

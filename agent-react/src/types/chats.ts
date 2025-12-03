@@ -3,9 +3,9 @@ import { z } from "zod";
 export const MessageSchema = z.object({
     id: z.number(),
     chatId: z.number(),
-    chatType: z.string(),
-    chatRole: z.string(),
-    MessageText: z.string()
+    type: z.string(),
+    role: z.string(),
+    messageText: z.string()
 });
 
 export const ChatSchema = z.object({

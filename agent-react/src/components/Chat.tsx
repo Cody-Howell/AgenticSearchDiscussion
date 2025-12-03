@@ -29,18 +29,18 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, className =
                         <div 
                             key={message.id} 
                             className={`p-4 rounded-lg ${
-                                message.chatRole.toLowerCase() === 'user' 
+                                message.role.toLowerCase() === 'user' 
                                     ? 'bg-blue-50 ml-8' 
                                     : 'bg-gray-50 mr-8'
                             }`}
                         >
                             <div className="flex gap-2 mb-2 text-xs text-gray-600">
-                                <span className="font-semibold">{message.chatRole}</span>
+                                <span className="font-semibold">{message.role}</span>
                                 <span>•</span>
-                                <span>{message.chatType}</span>
+                                <span>{message.type}</span>
                             </div>
                             <MarkdownDisplay 
-                                value={message.MessageText} 
+                                value={message.messageText} 
                                 className="prose prose-sm max-w-none"
                             />
                         </div>

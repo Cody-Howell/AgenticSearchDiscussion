@@ -8,5 +8,11 @@ namespace TemplateAPI.Function {
             List<UserMessage> messages,
             Tool toolDefinition,
             Func<string, Task> addTodoItemCallback);
+        Task<AiResponse> ProcessChatWithFileToolsAsync(
+            List<UserMessage> messages,
+            Tool[] fileTools,
+            Func<string, string, Task<string>> getFileContentsCallback,
+            Func<string, Task<string[]>> getFilesInFolderCallback,
+            Func<Task<string[]>> getTopLevelFoldersCallback);
     }
 }

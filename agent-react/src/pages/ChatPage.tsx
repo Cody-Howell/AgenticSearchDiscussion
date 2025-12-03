@@ -15,6 +15,7 @@ export default function ChatPage() {
             await addChatMessage(text);
         } catch (err) {
             console.error("Failed to send message:", err);
+            throw err;
         }
     };
 
