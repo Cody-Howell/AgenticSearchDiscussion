@@ -21,14 +21,16 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, className =
 
     return (
         <div className={`flex flex-col h-full ${className}`}>
-            <div className="flex-1 overflow-y-auto space-y-4 p-4">
+            {/* Scrollable area with centered fixed-width column */}
+            <div className="flex-1 overflow-y-auto p-4 flex justify-center">
+                <div className="w-full max-w-[800px] space-y-4">
                 {messages.length === 0 ? (
                     <div className="text-gray-500 text-center">No messages yet</div>
                 ) : (
                     messages.map((message) => (
                         <div 
                             key={message.Id} 
-                            className={`p-4 rounded-lg ${
+                            className={`p-4 rounded-lg break-words whitespace-pre-wrap ${
                                 message.Role.toLowerCase() === 'user' 
                                     ? 'bg-blue-50 ml-8' 
                                     : 'bg-gray-50 mr-8'
@@ -41,11 +43,12 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, className =
                             </div>
                             <MarkdownDisplay 
                                 value={message.MessageText} 
-                                className="prose prose-sm max-w-none"
+                                className="prose prose-sm max-w-none break-words"
                             />
                         </div>
                     ))
                 )}
+                </div>
             </div>
             <form onSubmit={handleSubmit} className="border-t p-4 bg-white">
                 <div className="flex gap-2">

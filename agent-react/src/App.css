@@ -42,3 +42,10 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Ensure markdown content never expands layout and wraps long lines */
+.ai-return {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
