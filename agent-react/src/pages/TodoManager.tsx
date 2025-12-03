@@ -1,7 +1,7 @@
 import { useState, FormEvent } from "react";
 import EditableItem from "../components/EditableItem";
 import { useCurrent } from "../contexts/CurrentContext";
-import { breakTodo } from "../api/todoApi";
+import { breakTodo, answerAllTodos } from "../api/todoApi";
 
 export default function TodoManager() {
   const { currentId, todoItems, addItem, deleteItem } = useCurrent();
@@ -63,6 +63,21 @@ export default function TodoManager() {
     }
   };
 
+  const onAnswerAll = async () => {
+    if (!currentId) {
+      setError("Set a valid id before answering all items");
+      return;
+    }
+    if (todoItems.length === 0) return;
+    try {
+      await answerAllTodos(currentId);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to answer all items");
+    }
+  };
+
   return (
     <div className="p-4 border rounded-md max-w-lg">
       {error ? <div className="text-red-600 mb-2">{error}</div> : null}
@@ -92,6 +107,16 @@ export default function TodoManager() {
             ))
           )}
         </ul>
+        {currentId && todoItems.length > 0 ? (
+          <div className="mt-3">
+            <button
+              onClick={onAnswerAll}
+              className="px-4 py-2 bg-purple-600 text-white rounded"
+            >
+              Answer All
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <form onSubmit={onAdd} className="flex gap-2">

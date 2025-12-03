@@ -40,7 +40,7 @@ export async function getOldest(id: number): Promise<TodoItem | null> {
 }
 
 export async function addTodo(id: number, item: string): Promise<void> {
-    const res = await fetch(`/api/todo/${id}?item=${item}`, {
+    const res = await fetch(`/api/todo/${id}?item=${encodeURIComponent(item)}`, {
         method: "POST"
     });
     await handleResponse(res);
@@ -62,10 +62,19 @@ export async function breakTodo(id: number, message: string): Promise<void> {
     });
 }
 
+export async function answerAllTodos(id: number): Promise<{ count: number; answers: string[] } | null> {
+    const res = await fetch(`/api/todo/${id}/answer-all`, {
+        method: "POST"
+    });
+    const data = await handleResponse(res);
+    return data as { count: number; answers: string[] } | null;
+}
+
 export default {
     getTodos,
     getOldest,
     addTodo,
     deleteTodo,
     breakTodo,
+    answerAllTodos,
 };
