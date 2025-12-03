@@ -42,7 +42,7 @@ public static class ChatEndpoint {
             return updated ? Results.NoContent() : Results.NotFound();
         });
         
-        app.MapPost("/api/chats/{chatId:int}/messages", async (int chatId, HttpContext httpContext, DBService db, IChatService chatService, IWebHostEnvironment env) => {
+        app.MapPost("/api/chats/{chatId:int}/messages", async (int chatId, HttpContext httpContext, DBService db, IChatService chatService, IWebHostEnvironment env, Services.WebSocketService wsService) => {
             string message;
             using (var reader = new StreamReader(httpContext.Request.Body, Encoding.UTF8)) {
                 message = await reader.ReadToEndAsync();
@@ -58,6 +58,12 @@ public static class ChatEndpoint {
             // Store user message
             DBMessage userMsg = new () {ChatId = chatId, MessageText = message, Role = "user", Type = "message"};
             await db.AddMessageAsync(userMsg);
+            
+            // Send WebSocket notification for user message
+            await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
+                type = "chat_message",
+                content = userMsg
+            }));
             
             // Get all previous messages for context
             var previousMessages = await db.GetMessagesAsync(chatId);
@@ -115,6 +121,12 @@ public static class ChatEndpoint {
                         Type = "tool_call"
                     };
                     await db.AddMessageAsync(toolCallMsg);
+                    
+                    // Send WebSocket notification for tool call
+                    await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
+                        type = "chat_message",
+                        content = toolCallMsg
+                    }));
                 } else if (msg.Role == "tool") {
                     // Store tool response
                     DBMessage toolResultMsg = new () {
@@ -124,6 +136,12 @@ public static class ChatEndpoint {
                         Type = "tool_result"
                     };
                     await db.AddMessageAsync(toolResultMsg);
+                    
+                    // Send WebSocket notification for tool result
+                    await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
+                        type = "chat_message",
+                        content = toolResultMsg
+                    }));
                 }
             }
             
@@ -133,6 +151,12 @@ public static class ChatEndpoint {
                 if (!string.IsNullOrWhiteSpace(aiMessage)) {
                     DBMessage aiMsg = new () {ChatId = chatId, MessageText = aiMessage, Role = "assistant", Type = "message"};
                     await db.AddMessageAsync(aiMsg);
+                    
+                    // Send WebSocket notification for AI message
+                    await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
+                        type = "chat_message",
+                        content = aiMsg
+                    }));
                 }
             }
             

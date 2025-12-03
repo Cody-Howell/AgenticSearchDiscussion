@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const MessageSchema = z.object({
-    id: z.number(),
-    chatId: z.number(),
-    type: z.string(),
-    role: z.string(),
-    messageText: z.string()
+    Id: z.number(),
+    ChatId: z.number(),
+    Type: z.string(),
+    Role: z.string(),
+    MessageText: z.string()
 });
 
 export const ChatSchema = z.object({

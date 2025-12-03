@@ -3,7 +3,7 @@ import { StateContext } from "./CurrentContext";
 import { getTodos, addTodo, deleteTodo } from "../api/todoApi";
 import { TodoItem, TodoItemSchema } from "../types/todos";
 import { getMessages, addMessage, getAllChats, createChat as apiCreateChat, updateChatTitle as apiUpdateChatTitle } from "../api/chatApi";
-import { Message as ChatMessage, Chat } from "../types/chats";
+import { Message as ChatMessage, Chat, MessageSchema } from "../types/chats";
 
 
 export function StateProvider({ children }: { children: ReactNode; }) {
@@ -100,6 +100,11 @@ export function StateProvider({ children }: { children: ReactNode; }) {
                     setTodoItems(items => 
                     [...items, TodoItemSchema.parse(data.content)]
                     )
+                } else if (data.type === 'chat_message') {
+                    // Add chat message in real-time
+                    console.log(data.content);
+                    const message = MessageSchema.parse(data.content);
+                    setChatMessages(messages => [...messages, message]);
                 }
                 // Add more message handlers as needed
             } catch (e) {

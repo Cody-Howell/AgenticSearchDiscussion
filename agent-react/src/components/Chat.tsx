@@ -27,20 +27,20 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, className =
                 ) : (
                     messages.map((message) => (
                         <div 
-                            key={message.id} 
+                            key={message.Id} 
                             className={`p-4 rounded-lg ${
-                                message.role.toLowerCase() === 'user' 
+                                message.Role.toLowerCase() === 'user' 
                                     ? 'bg-blue-50 ml-8' 
                                     : 'bg-gray-50 mr-8'
                             }`}
                         >
                             <div className="flex gap-2 mb-2 text-xs text-gray-600">
-                                <span className="font-semibold">{message.role}</span>
+                                <span className="font-semibold">{message.Role}</span>
                                 <span>•</span>
-                                <span>{message.type}</span>
+                                <span>{message.Type}</span>
                             </div>
                             <MarkdownDisplay 
-                                value={message.messageText} 
+                                value={message.MessageText} 
                                 className="prose prose-sm max-w-none"
                             />
                         </div>

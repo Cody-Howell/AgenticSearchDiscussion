@@ -39,7 +39,7 @@ public class WebSocketService {
                 Console.WriteLine($"No active WebSocket connections for ID: {id}");
                 return;
             }
-            sockets = new List<WebSocket>(sockets); // Create a copy to iterate safely
+            sockets = [.. sockets]; // Create a copy to iterate safely
         }
 
         var messageBytes = Encoding.UTF8.GetBytes(message);
