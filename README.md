@@ -157,60 +157,20 @@ Rubric Items:
 Features:
 - Agent can almost create new items from long messages
 
-### Nov 22
-
-#### Estimates:
-
-Rubric items:
-- item 1 with description
-- item 2 with description
-
-Features:
-- feature 4 with description
-- feature 5 with description
-
-#### Delivered
-
-Rubric Items:
-
-Features:
-
-
-### Nov 25
-
-#### Estimates:
-
-Rubric items:
-- item 1 with description
-- item 2 with description
-
-Features:
-- feature 4 with description
-- feature 5 with description
-
-#### Delivered
-
-Rubric Items:
-
-Features:
-
 ### Dec 3
 
-#### Estimates:
-
-Rubric items:
-- item 1 with description
-- item 2 with description
-
-Features:
-- feature 4 with description
-- feature 5 with description
-
 #### Delivered
 
 Rubric Items:
+- Agentic functions
+    - Agent can read files and self-loop of todos
+- Frontend
+    - The frontend can interact with all API endpoints
 
 Features:
+- User can break paragraphs down into many managable chunks
+- AI can get a significant loop of todo items read (and the create loop is infinite)
+- User can chat with the AI, both generally and about codebases it has access to (which it does automatically)
 
 ### Dec 6
 
