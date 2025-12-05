@@ -21,6 +21,12 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             Tools = functions
         };
 
+        // Diagnostic logging
+        Console.WriteLine($"[ChatService.SendMessageAsync] Messages before serialization:");
+        foreach (var (i, msg) in messages.Select((m, idx) => (idx, m))) {
+            Console.WriteLine($"  [{i}] Role={msg.Role}, Content={msg.Content?.Substring(0, Math.Min(50, msg.Content?.Length ?? 0))}, ToolCalls={msg.ToolCalls?.Length}");
+        }
+
         var json = JsonConvert.SerializeObject(payload, QuickType.Converter.Settings);
 
         var client = httpFactory.CreateClient();
@@ -33,7 +39,8 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
         using var resp = await client.SendAsync(req);
         var respText = await resp.Content.ReadAsStringAsync();
 
-        // Console.WriteLine(respText);
+        Console.WriteLine($"[ChatService.SendMessageAsync] Request payload: {json}");
+        Console.WriteLine($"[ChatService.SendMessageAsync] Response status: {(int)resp.StatusCode}");
 
         if (!resp.IsSuccessStatusCode) {
             throw new HttpRequestException($"AI server returned {(int)resp.StatusCode}: {respText}");
@@ -152,13 +159,13 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             messages.Add(new UserMessage {
                 Role = "assistant",
                 ToolCalls = new[] {
-                    new {
-                        type = "function",
-                        function = new {
-                            name = toolCall.Function.Name,
-                            arguments = argsJson
+                    new UserToolCall {
+                        Type = "function",
+                        Function = new UserToolFunction {
+                            Name = toolCall.Function.Name,
+                            Arguments = argsJson
                         },
-                        id = toolCall.Id
+                        Id = toolCall.Id
                     }
                 }
             });
@@ -273,13 +280,13 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             var assistantToolCall = new UserMessage {
                 Role = "assistant",
                 ToolCalls = new[] {
-                    new {
-                        type = "function",
-                        function = new {
-                            name = functionName,
-                            arguments = argsJson
+                    new UserToolCall {
+                        Type = "function",
+                        Function = new UserToolFunction {
+                            Name = functionName,
+                            Arguments = argsJson
                         },
-                        id = toolCall.Id
+                        Id = toolCall.Id
                     }
                 }
             };

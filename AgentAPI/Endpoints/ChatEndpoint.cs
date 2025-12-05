@@ -72,10 +72,26 @@ public static class ChatEndpoint {
             };
             
             foreach (var msg in previousMessages) {
-                conversationHistory.Add(new UserMessage { 
-                    Role = msg.Role, 
-                    Content = msg.MessageText 
-                });
+                if (msg.Type == "tool_call" && msg.Role == "assistant") {
+                    // Deserialize the tool calls from MessageText
+                    UserToolCall[]? toolCalls = null;
+                    try {
+                        toolCalls = JsonConvert.DeserializeObject<UserToolCall[]>(msg.MessageText);
+                    } catch {
+                        // If deserialization fails, skip this message or log error
+                        continue;
+                    }
+                    
+                    conversationHistory.Add(new UserMessage { 
+                        Role = msg.Role,
+                        ToolCalls = toolCalls
+                    });
+                } else {
+                    conversationHistory.Add(new UserMessage { 
+                        Role = msg.Role, 
+                        Content = msg.MessageText 
+                    });
+                }
             }
             
             // Define file tools

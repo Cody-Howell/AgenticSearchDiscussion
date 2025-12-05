@@ -30,7 +30,26 @@ public partial class UserMessage {
     public object? FunctionCall { get; set; }
 
     [JsonProperty("tool_calls", NullValueHandling = NullValueHandling.Ignore)]
-    public object[]? ToolCalls { get; set; }
+    public UserToolCall[]? ToolCalls { get; set; }
+}
+
+public partial class UserToolCall {
+    [JsonProperty("type")]
+    public string Type { get; set; } = "function";
+
+    [JsonProperty("function")]
+    public UserToolFunction? Function { get; set; }
+
+    [JsonProperty("id")]
+    public string? Id { get; set; }
+}
+
+public partial class UserToolFunction {
+    [JsonProperty("name")]
+    public required string Name { get; set; }
+
+    [JsonProperty("arguments")]
+    public required string Arguments { get; set; }
 }
 
 public partial class Tool {
