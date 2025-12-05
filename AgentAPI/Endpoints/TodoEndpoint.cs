@@ -67,7 +67,14 @@ public static class TodoEndpoint {
 
         // Answers all existing todo items sequentially using the ReadTodos system prompt.
         // No functions/tools are allowed; runs in a loop until all items are processed.
-        app.MapPost("/api/todo/{id}/answer-all", async (int id, HttpContext httpContext, TodoService todos, IChatService chatService, Services.WebSocketService wsService) => {
+        app.MapPost("/api/todo/{id}/answer-all", async (
+            int id,
+            HttpContext httpContext,
+            TodoService todos,
+            IChatService chatService,
+            Services.WebSocketService wsService,
+            TemplateAPI.DBService db
+        ) => {
             try {
                 var existing = todos.GetTodoItems(id)?.ToList() ?? new List<TemplateAPI.Classes.TodoItem>();
                 if (existing.Count == 0) {
@@ -112,6 +119,7 @@ public static class TodoEndpoint {
                         Type = "tool_call",
                         MessageText = userToolCallJson
                     };
+                    userToolCallMsg.Id = await db.AddMessageAsync(userToolCallMsg);
                     await wsService.SendMessageAsync(id, JsonConvert.SerializeObject(new {
                         type = "chat_message",
                         content = userToolCallMsg
@@ -132,6 +140,7 @@ public static class TodoEndpoint {
                             Type = "message",
                             MessageText = answer
                         };
+                        aiMsg.Id = await db.AddMessageAsync(aiMsg);
                         await wsService.SendMessageAsync(id, JsonConvert.SerializeObject(new {
                             type = "chat_message",
                             content = aiMsg
