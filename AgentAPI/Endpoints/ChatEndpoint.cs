@@ -57,7 +57,7 @@ public static class ChatEndpoint {
             
             // Store user message
             DBMessage userMsg = new () {ChatId = chatId, MessageText = message, Role = "user", Type = "message"};
-            await db.AddMessageAsync(userMsg);
+            userMsg.Id = await db.AddMessageAsync(userMsg);
             
             // Send WebSocket notification for user message
             await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
@@ -109,7 +109,7 @@ public static class ChatEndpoint {
                                 Role = "assistant",
                                 Type = "tool_call"
                             };
-                            await db.AddMessageAsync(toolCallDb);
+                            toolCallDb.Id = await db.AddMessageAsync(toolCallDb);
                             await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
                                 type = "chat_message",
                                 content = toolCallDb
@@ -121,7 +121,7 @@ public static class ChatEndpoint {
                                 Role = "tool",
                                 Type = "tool_result"
                             };
-                            await db.AddMessageAsync(toolResultDb);
+                            toolResultDb.Id = await db.AddMessageAsync(toolResultDb);
                             await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
                                 type = "chat_message",
                                 content = toolResultDb
@@ -140,7 +140,7 @@ public static class ChatEndpoint {
                 var aiMessage = aiResp.Choices[0].Message?.Content ?? "";
                 if (!string.IsNullOrWhiteSpace(aiMessage)) {
                     DBMessage aiMsg = new () {ChatId = chatId, MessageText = aiMessage, Role = "assistant", Type = "message"};
-                    await db.AddMessageAsync(aiMsg);
+                    aiMsg.Id = await db.AddMessageAsync(aiMsg);
                     
                     // Send WebSocket notification for AI message
                     await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {

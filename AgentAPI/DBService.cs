@@ -36,12 +36,15 @@ public class DBService(IDbConnection conn) {
         return await conn.QueryAsync<DBMessage>(sql, new { ChatId = chatId });
     }
     
-    // Add a new message
-    public async Task AddMessageAsync(DBMessage message) {
+    // Add a new message and return its generated ID
+    public async Task<int> AddMessageAsync(DBMessage message) {
         const string sql = @"
             INSERT INTO Messages (ChatId, ChatType, ChatRole, MessageText) 
-            VALUES (@ChatId, @Type, @Role, @MessageText)";
-        await conn.ExecuteAsync(sql, message);
+            VALUES (@ChatId, @Type, @Role, @MessageText)
+            RETURNING Id";
+
+        var newId = await conn.ExecuteScalarAsync<int>(sql, message);
+        return newId;
     }
     
     // Delete a message
