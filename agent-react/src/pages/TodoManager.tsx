@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import EditableItem from "../components/EditableItem";
+import Spinner from "../components/Spinner";
 import { useCurrent } from "../contexts/CurrentContext";
 import { breakTodo, answerAllTodos } from "../api/todoApi";
 
@@ -8,6 +9,10 @@ export default function TodoManager() {
   const [newText, setNewText] = useState("");
   const [breakMessage, setBreakMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loadingAdd, setLoadingAdd] = useState(false);
+  const [loadingBreak, setLoadingBreak] = useState(false);
+  const [loadingAnswerAll, setLoadingAnswerAll] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState<string | null>(null);
 
   const onAdd = async (e?: FormEvent) => {
     e?.preventDefault();
@@ -16,12 +21,15 @@ export default function TodoManager() {
       setError("Set a valid id before adding items");
       return;
     }
+    setLoadingAdd(true);
     try {
       await addItem(newText.trim());
       setNewText("");
     } catch (err) {
       console.error(err);
       setError("Failed to add item");
+    } finally {
+      setLoadingAdd(false);
     }
   };
 
@@ -32,6 +40,7 @@ export default function TodoManager() {
       setError("Set a valid id before sending break message");
       return;
     }
+    setLoadingBreak(true);
     try {
       await breakTodo(currentId, breakMessage.trim());
       setBreakMessage("");
@@ -39,16 +48,21 @@ export default function TodoManager() {
     } catch (err) {
       console.error(err);
       setError("Failed to send break message");
+    } finally {
+      setLoadingBreak(false);
     }
   };
 
   const onDelete = async (itemId: string) => {
+    setLoadingDelete(itemId);
     try {
       await deleteItem(itemId);
       setError(null);
     } catch (err) {
       console.error(err);
       setError("Failed to delete item");
+    } finally {
+      setLoadingDelete(null);
     }
   };
 
@@ -69,12 +83,15 @@ export default function TodoManager() {
       return;
     }
     if (todoItems.length === 0) return;
+    setLoadingAnswerAll(true);
     try {
       await answerAllTodos(currentId);
       setError(null);
     } catch (err) {
       console.error(err);
       setError("Failed to answer all items");
+    } finally {
+      setLoadingAnswerAll(false);
     }
   };
 
@@ -98,10 +115,11 @@ export default function TodoManager() {
                 />
                 <button
                   onClick={() => onDelete(it.Id)}
-                  className="text-red-600 hover:text-red-800 hover:bg-red-50 rounded px-2 py-1 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+                  disabled={loadingDelete === it.Id}
+                  className="text-red-600 hover:text-red-800 hover:bg-red-50 rounded px-2 py-1 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-100 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400"
                   aria-label="Delete todo"
                 >
-                  ✕
+                  {loadingDelete === it.Id ? <Spinner /> : "✕"}
                 </button>
               </div>
             ))
@@ -111,9 +129,16 @@ export default function TodoManager() {
           <div className="mt-3">
             <button
               onClick={onAnswerAll}
-              className="px-4 py-2 bg-purple-600 text-white rounded"
+              disabled={loadingAnswerAll}
+              className="px-4 py-2 bg-purple-600 text-white rounded disabled:bg-purple-400 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              Answer All
+              {loadingAnswerAll ? (
+                <>
+                  <Spinner /> Answering...
+                </>
+              ) : (
+                "Answer All"
+              )}
             </button>
           </div>
         ) : null}
@@ -125,12 +150,20 @@ export default function TodoManager() {
           value={newText}
           onChange={(e) => setNewText(e.target.value)}
           placeholder="New todo text"
+          disabled={loadingAdd}
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          disabled={loadingAdd}
+          className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center gap-2"
         >
-          Add
+          {loadingAdd ? (
+            <>
+              <Spinner /> Adding...
+            </>
+          ) : (
+            "Add"
+          )}
         </button>
       </form>
 
@@ -143,12 +176,20 @@ export default function TodoManager() {
             onChange={(e) => setBreakMessage(e.target.value)}
             placeholder="Enter your question or message..."
             rows={3}
+            disabled={loadingBreak}
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded self-start"
+            disabled={loadingBreak}
+            className="px-4 py-2 bg-green-600 text-white rounded self-start disabled:bg-green-400 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            Send Break
+            {loadingBreak ? (
+              <>
+                <Spinner /> Sending...
+              </>
+            ) : (
+              "Send Break"
+            )}
           </button>
         </form>
       </div>

@@ -36,7 +36,7 @@ function GenericNavbar({ items }: NavbarProps) {
               to="/" 
               className="text-xl font-bold hover:text-blue-200 transition-colors"
             >
-              My App
+              Green_Needle
             </Link>
             <div className="flex space-x-4">
               {items.map((itemString) => {
