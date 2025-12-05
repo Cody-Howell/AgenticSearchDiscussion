@@ -5,6 +5,7 @@ using TemplateAPI.Endpoints;
 using TemplateAPI.Function;
 using TemplateAPI.Classes;
 using System.Net;
+using System.Text.Json;
 
 namespace TemplateAPI.Endpoints;
 
@@ -17,7 +18,12 @@ public static class ChatEndpoint {
         
         app.MapGet("/api/chats/{chatId:int}/messages", async (int chatId, DBService db) => {
             var messages = await db.GetMessagesAsync(chatId);
-            return Results.Ok(messages);
+            // Preserve property casing to match WebSocket payloads and frontend schema
+            var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web)
+            {
+                PropertyNamingPolicy = null
+            };
+            return Results.Json(messages, serializerOptions);
         });
         
         app.MapPost("/api/chats/create", async (DBService db) => {

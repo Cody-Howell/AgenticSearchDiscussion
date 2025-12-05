@@ -58,7 +58,7 @@ export default function EditableItem({
           onChange={(e) => setEditValue(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          className="w-full px-4 py-2 rounded-lg border-2 border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full px-4 py-2 rounded-lg border-2 border-emerald-500 bg-emerald-950/60 text-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-400"
         />
       </li>
     );
@@ -69,10 +69,10 @@ export default function EditableItem({
       <button
         onClick={onClick}
         onDoubleClick={handleDoubleClick}
-        className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+        className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
           isActive
-            ? "bg-blue-600 text-white font-semibold"
-            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            ? "bg-emerald-700 text-emerald-50 font-semibold shadow-lg shadow-emerald-900/50"
+            : "bg-emerald-900/50 text-emerald-100 hover:bg-emerald-800/70 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-950/50"
         }`}
       >
         {title}

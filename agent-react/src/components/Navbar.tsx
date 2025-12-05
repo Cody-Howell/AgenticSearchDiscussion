@@ -15,7 +15,7 @@ function NavLink({ itemString }: NavLinkProps) {
   return (
     <Link 
       to={item.path} 
-      className="px-3 py-2 rounded-md hover:bg-blue-700 transition-colors"
+      className="px-3 py-2 rounded-lg cursor-pointer text-emerald-50 hover:bg-emerald-700/40 hover:text-emerald-50 transition-all duration-200"
     >
       {item.title}
     </Link>
@@ -28,17 +28,17 @@ interface NavbarProps {
 
 function GenericNavbar({ items }: NavbarProps) {
   return (
-    <nav className="bg-blue-600 text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4">
+    <nav className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 text-emerald-50 shadow-2xl shadow-emerald-950/60 border border-emerald-900/70 rounded-2xl">
+      <div className="px-4">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-8">
-            <Link 
-              to="/" 
-              className="text-xl font-bold hover:text-blue-200 transition-colors"
+          <div className="flex items-center gap-6">
+            <a 
+              href="https://www.youtube.com/watch?v=1okD66RmktA"
+              className="text-xl font-bold tracking-tight hover:text-emerald-300 transition-colors duration-200 cursor-pointer"
             >
               Green_Needle
-            </Link>
-            <div className="flex space-x-4">
+            </a>
+            <div className="flex gap-2 text-sm">
               {items.map((itemString) => {
                 const item: NavItem = JSON.parse(itemString);
                 return <NavLink key={item.path} itemString={itemString} />;

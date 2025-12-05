@@ -13,21 +13,21 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white shadow-lg h-screen sticky top-0">
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Chats</h2>
+    <aside className="w-64 h-full bg-emerald-950/60 border border-emerald-900/70 shadow-2xl shadow-emerald-950/60 rounded-2xl backdrop-blur flex-shrink-0 overflow-hidden">
+      <div className="p-4 space-y-4 h-full flex flex-col">
+        <div className="flex items-center justify-between flex-none">
+          <h2 className="text-xl font-bold text-emerald-100 tracking-tight">Chats</h2>
           <button
             onClick={handleNewChat}
-            className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-md transition-colors font-semibold text-sm"
+            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-emerald-50 rounded-lg transition-all duration-200 font-semibold text-sm cursor-pointer hover:-translate-y-0.5 hover:shadow-lg shadow-emerald-900/50"
             title="Create new chat"
           >
             + New
           </button>
         </div>
-        <ul className="space-y-2">
+        <ul className="space-y-2 overflow-y-auto pr-1 flex-1">
           {chats.length === 0 ? (
-            <li className="text-sm text-gray-500">No chats yet</li>
+            <li className="text-sm text-emerald-200/70">No chats yet</li>
           ) : (
             chats.map((chat) => (
               <EditableItem
