@@ -96,7 +96,7 @@ export default function TodoManager() {
   };
 
   return (
-    <div className="p-6 border border-emerald-900/70 rounded-2xl max-w-xl bg-emerald-950/50 shadow-2xl shadow-emerald-950/60 space-y-4">
+    <div className="p-6 border border-emerald-900/70 rounded-2xl max-w-xl bg-emerald-950/60 shadow-lg shadow-emerald-950/40 space-y-4">
       {error ? <div className="text-red-400 mb-2">{error}</div> : null}
 
       <div className="space-y-3">

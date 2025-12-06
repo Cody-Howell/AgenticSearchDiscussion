@@ -24,7 +24,7 @@ function App() {
   return (
     <AuthProvider {...oidcConfig}>
       <StateProvider>
-        <div className="h-screen bg-gradient-to-br from-emerald-950 via-slate-950 to-emerald-900 text-emerald-50 overflow-hidden">
+        <div className="h-screen bg-slate-950 text-emerald-50 overflow-hidden">
           <BrowserRouter>
             <div className="max-w-7xl mx-auto h-full px-4 py-4 flex flex-col gap-4">
               <div className="flex-none">
@@ -32,7 +32,7 @@ function App() {
               </div>
               <div className="flex-1 flex gap-4 overflow-hidden">
                 <Sidebar />
-                <div className="flex-1 min-w-0 p-6 bg-emerald-950/50 border border-emerald-900/60 rounded-2xl shadow-2xl shadow-emerald-950/60 backdrop-blur overflow-y-auto">
+                <div className="flex-1 min-w-0 p-6 bg-emerald-950/60 border border-emerald-900/60 rounded-2xl shadow-xl shadow-emerald-950/50 backdrop-blur-sm overflow-y-auto">
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/auth" element={<AuthSection />} />

@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="bg-emerald-950/50 rounded-2xl border border-emerald-900/70 shadow-2xl shadow-emerald-950/60 p-8 backdrop-blur">
+      <div className="bg-emerald-950/60 rounded-2xl border border-emerald-900/70 shadow-lg shadow-emerald-950/40 p-8 backdrop-blur-sm">
         <h1 className="text-4xl font-bold text-emerald-50 mb-4 pb-2 border-b border-emerald-800">Home</h1>
         <p className="text-emerald-100/90 text-lg mb-6">
           This app provides a few features to help with brainstorming and

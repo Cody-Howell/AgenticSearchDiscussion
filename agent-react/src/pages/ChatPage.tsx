@@ -20,7 +20,7 @@ export default function ChatPage() {
     };
 
     return (
-        <div className="h-full border border-emerald-900/70 rounded-2xl bg-emerald-950/40 shadow-2xl shadow-emerald-950/50 overflow-hidden flex flex-col">
+        <div className="h-full border border-emerald-900/70 rounded-2xl bg-emerald-950/50 shadow-lg shadow-emerald-950/40 overflow-hidden flex flex-col">
             <Chat 
                 messages={chatMessages} 
                 onSendMessage={handleSendMessage}

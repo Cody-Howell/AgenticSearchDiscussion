@@ -95,7 +95,7 @@ export default function FileManager() {
         </div>
       </div>
 
-      <div className="bg-emerald-950/50 border border-emerald-900/70 rounded-2xl p-6 space-y-4 shadow-2xl shadow-emerald-950/60 backdrop-blur">
+      <div className="bg-emerald-950/60 border border-emerald-900/70 rounded-2xl p-6 space-y-4 shadow-lg shadow-emerald-950/40 backdrop-blur-sm">
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[240px] space-y-2">
             <label className="block text-sm font-semibold text-emerald-100">Folder</label>

@@ -28,7 +28,7 @@ interface NavbarProps {
 
 function GenericNavbar({ items }: NavbarProps) {
   return (
-    <nav className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 text-emerald-50 shadow-2xl shadow-emerald-950/60 border border-emerald-900/70 rounded-2xl">
+    <nav className="bg-emerald-950 text-emerald-50 shadow-xl shadow-emerald-950/50 border border-emerald-900/70 rounded-2xl">
       <div className="px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-6">

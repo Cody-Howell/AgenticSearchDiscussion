@@ -13,7 +13,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 h-full bg-emerald-950/60 border border-emerald-900/70 shadow-2xl shadow-emerald-950/60 rounded-2xl backdrop-blur flex-shrink-0 overflow-hidden">
+    <aside className="w-64 h-full bg-emerald-950/60 border border-emerald-900/70 shadow-lg shadow-emerald-950/40 rounded-2xl backdrop-blur-sm flex-shrink-0 overflow-hidden">
       <div className="p-4 space-y-4 h-full flex flex-col">
         <div className="flex items-center justify-between flex-none">
           <h2 className="text-xl font-bold text-emerald-100 tracking-tight">Chats</h2>
