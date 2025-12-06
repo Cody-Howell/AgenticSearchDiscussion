@@ -1,5 +1,6 @@
-import { Link } from "react-router";
 import { useAuth } from "react-oidc-context";
+import { Link } from "react-router";
+import GenericHorizontalLayout from "./generics/GenericHorizontalLayout";
 
 interface NavItem {
   title: string;
@@ -7,12 +8,10 @@ interface NavItem {
 }
 
 interface NavLinkProps {
-  itemString: string;
+  item: NavItem;
 }
 
-function NavLink({ itemString }: NavLinkProps) {
-  const item: NavItem = JSON.parse(itemString);
-  
+function NavLink({ item }: NavLinkProps) {
   return (
     <Link 
       to={item.path} 
@@ -24,10 +23,10 @@ function NavLink({ itemString }: NavLinkProps) {
 }
 
 interface NavbarProps {
-  items: string[];
+  items: NavItem[];
 }
 
-function GenericNavbar({ items }: NavbarProps) {
+function AppNavbar({ items }: NavbarProps) {
   return (
     <nav className="bg-emerald-950 text-emerald-50 shadow-xl shadow-emerald-950/50 border border-emerald-900/70 rounded-2xl">
       <div className="px-4">
@@ -39,12 +38,11 @@ function GenericNavbar({ items }: NavbarProps) {
             >
               Green_Needle
             </a>
-            <div className="flex gap-2 text-sm">
-              {items.map((itemString) => {
-                const item: NavItem = JSON.parse(itemString);
-                return <NavLink key={item.path} itemString={itemString} />;
-              })}
-            </div>
+            <GenericHorizontalLayout 
+              items={items} 
+              ItemComponent={NavLink}
+              getKey={(item) => item.path}
+            />
           </div>
         </div>
       </div>
@@ -54,15 +52,14 @@ function GenericNavbar({ items }: NavbarProps) {
 
 export default function Navbar() {
   const auth = useAuth();
-  const navItems: string[] = [
-    JSON.stringify({ title: "Home", path: "/" }),
-    JSON.stringify({ title: "Auth", path: "/auth" }),
-    JSON.stringify({ title: "Files", path: "/file" }),
-    // Only show Todo and Chat if authenticated
+  const navItems: NavItem[] = [
+    { title: "Home", path: "/" },
+    { title: "Auth", path: "/auth" },
+    { title: "Files", path: "/file" },
     ...(auth.isAuthenticated ? [
-      JSON.stringify({ title: "Todo", path: "/todo" }),
-      JSON.stringify({ title: "Chat", path: "/chat" })
+      { title: "Todo", path: "/todo" },
+      { title: "Chat", path: "/chat" }
     ] : [])
   ];
-  return <GenericNavbar items={navItems} />;
+  return <AppNavbar items={navItems} />;
 }

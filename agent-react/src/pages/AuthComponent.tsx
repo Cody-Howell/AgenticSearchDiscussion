@@ -20,7 +20,6 @@ export default function AuthSection() {
   }
 
   if (auth.isAuthenticated) {
-    // console.log(auth.user?.access_token);
     return (
       <div className="space-y-3 text-emerald-50">
         <div>Hello {auth.user?.profile.email}</div>
