@@ -23,6 +23,14 @@ export default function ChatPage() {
         }
     };
 
+    if (!currentId || currentId <= 0) {
+        return (
+            <div className="h-full border border-emerald-900/70 rounded-2xl bg-emerald-950/50 shadow-lg shadow-emerald-950/40 overflow-hidden flex flex-col items-center justify-center">
+                <div className="text-emerald-200/70 text-center">Please select a valid ID to view chat</div>
+            </div>
+        );
+    }
+
     return (
         <div className="h-full border border-emerald-900/70 rounded-2xl bg-emerald-950/50 shadow-lg shadow-emerald-950/40 overflow-hidden flex flex-col">
             <Chat 

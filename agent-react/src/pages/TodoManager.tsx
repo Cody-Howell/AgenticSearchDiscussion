@@ -108,6 +108,14 @@ export default function TodoManager() {
     // }
   };
 
+  if (!currentId || currentId <= 0) {
+    return (
+      <div className="p-6 border border-emerald-900/70 rounded-2xl max-w-xl bg-emerald-950/60 shadow-lg shadow-emerald-950/40">
+        <div className="text-emerald-200/70 text-center">Please select a valid ID to view todos</div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 border border-emerald-900/70 rounded-2xl max-w-xl bg-emerald-950/60 shadow-lg shadow-emerald-950/40 space-y-4">
       {error ? <div className="text-red-400 mb-2">{error}</div> : null}
