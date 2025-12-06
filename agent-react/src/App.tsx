@@ -1,6 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import { AuthProvider } from "react-oidc-context";
-import type { User } from "oidc-client-ts";
 import AuthSection from "./pages/AuthComponent";
 import Home from "./pages/Home";
 import TodoManager from "./pages/TodoManager";
@@ -12,38 +10,31 @@ import { StateProvider } from "./contexts/CurrentProvider";
 import ErrorBoundary from "./contexts/ErrorBoundary";
 import { Toaster } from "react-hot-toast";
 
-const onSigninCallback = (_user: User | void): void => {
-  window.history.replaceState({}, document.title, window.location.pathname);
-};
-const oidcConfig = {
-  authority: " https://auth-dev.snowse.io/realms/DevRealm",
-  client_id: "cody-final",
-  redirect_uri: "https://agent.docker.codyhowell.dev",
-  onSigninCallback: onSigninCallback,
-};
+import { useAuth } from "react-oidc-context";
 
 function App() {
+  const auth = useAuth();
   return (
-    <AuthProvider {...oidcConfig}>
-      <Toaster 
+    <>
+      <Toaster
         position="top-right"
         toastOptions={{
           duration: 5000,
           style: {
-            background: '#064e3b',
-            color: '#d1fae5',
-            border: '1px solid #047857',
+            background: "#064e3b",
+            color: "#d1fae5",
+            border: "1px solid #047857",
           },
           success: {
             iconTheme: {
-              primary: '#10b981',
-              secondary: '#d1fae5',
+              primary: "#10b981",
+              secondary: "#d1fae5",
             },
           },
           error: {
             iconTheme: {
-              primary: '#ef4444',
-              secondary: '#d1fae5',
+              primary: "#ef4444",
+              secondary: "#d1fae5",
             },
           },
         }}
@@ -62,9 +53,13 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/auth" element={<AuthSection />} />
-                      <Route path="/todo" element={<TodoManager />} />
                       <Route path="/file" element={<FileManager />} />
-                      <Route path="/chat" element={<ChatPage />} />
+                      {auth.isAuthenticated && (
+                        <>
+                          <Route path="/todo" element={<TodoManager />} />
+                          <Route path="/chat" element={<ChatPage />} />
+                        </>
+                      )}
                     </Routes>
                   </div>
                 </div>
@@ -73,7 +68,7 @@ function App() {
           </div>
         </StateProvider>
       </ErrorBoundary>
-    </AuthProvider>
+    </>
   );
 }
 

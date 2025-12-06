@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useAuth } from "react-oidc-context";
 
 interface NavItem {
   title: string;
@@ -52,13 +53,16 @@ function GenericNavbar({ items }: NavbarProps) {
 }
 
 export default function Navbar() {
+  const auth = useAuth();
   const navItems: string[] = [
     JSON.stringify({ title: "Home", path: "/" }),
     JSON.stringify({ title: "Auth", path: "/auth" }),
     JSON.stringify({ title: "Files", path: "/file" }),
-    JSON.stringify({ title: "Todo", path: "/todo" }),
-    JSON.stringify({ title: "Chat", path: "/chat" }),
+    // Only show Todo and Chat if authenticated
+    ...(auth.isAuthenticated ? [
+      JSON.stringify({ title: "Todo", path: "/todo" }),
+      JSON.stringify({ title: "Chat", path: "/chat" })
+    ] : [])
   ];
-
   return <GenericNavbar items={navItems} />;
 }
