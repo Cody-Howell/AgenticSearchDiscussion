@@ -66,8 +66,6 @@ public static class TodoEndpoint {
             await httpContext.Response.WriteAsync(respJson);
         });
 
-        // Answers all existing todo items sequentially using the ReadTodos system prompt.
-        // No functions/tools are allowed; runs in a loop until all items are processed.
         app.MapPost("/api/todo/{id}/answer-all", async (
             int id,
             HttpContext httpContext,
@@ -92,7 +90,6 @@ public static class TodoEndpoint {
 
                 var answers = new List<string>();
 
-                // Process each todo item text as an independent task with no tools.
                 foreach (var item in existing) {
                     if (string.IsNullOrWhiteSpace(item.Text)) {
                         answers.Add(string.Empty);
@@ -103,7 +100,6 @@ public static class TodoEndpoint {
                         new UserMessage { Role = "user", Content = item.Text }
                     };
 
-                    // Emit a WebSocket tool-call styled event representing the incoming user task
                     var userToolCallJson = JsonConvert.SerializeObject(new [] {
                         new {
                             type = "function",
@@ -133,7 +129,6 @@ public static class TodoEndpoint {
                     }
                     answers.Add(answer);
 
-                    // Emit a WebSocket message with the AI's answer
                     if (!string.IsNullOrWhiteSpace(answer)) {
                         var aiMsg = new TemplateAPI.Classes.DBMessage {
                             ChatId = id,

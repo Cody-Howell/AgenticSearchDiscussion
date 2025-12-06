@@ -9,10 +9,8 @@ public static class WebSocketEndpoint {
             if (context.WebSockets.IsWebSocketRequest) {
                 using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                 
-                // Register the socket with the service
                 wsService.RegisterSocket(id, webSocket);
-                
-                // Keep the connection alive (only listens for close messages)
+
                 await wsService.KeepAliveAsync(id, webSocket);
             } else {
                 context.Response.StatusCode = 400;

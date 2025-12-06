@@ -21,8 +21,6 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             Tools = functions
         };
 
-        // Diagnostic logging
-        Console.WriteLine($"[ChatService.SendMessageAsync] Messages before serialization:");
         foreach (var (i, msg) in messages.Select((m, idx) => (idx, m))) {
             Console.WriteLine($"  [{i}] Role={msg.Role}, Content={msg.Content?.Substring(0, Math.Min(50, msg.Content?.Length ?? 0))}, ToolCalls={msg.ToolCalls?.Length}");
         }
@@ -47,7 +45,6 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
         }
 
         try {
-            // Normalize possible placements/names of function/tool call metadata so our typed model can parse it.
             var j = Newtonsoft.Json.Linq.JObject.Parse(respText);
 
             var choices = j["choices"] as Newtonsoft.Json.Linq.JArray;
@@ -109,7 +106,6 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             var argsJson = toolCall.Function.Arguments ?? string.Empty;
             string? itemArg = null;
 
-            // If the tool call is user_take_a_look, append it and signal completion
             if (toolCall.Function.Name == "user_take_a_look") {
                 messages.Add(new UserMessage {
                     Role = "assistant",
@@ -133,7 +129,6 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
                 break;
             }
 
-            // If the tool call is an assistant instruction, add it as an assistant message
             if (toolCall.Function.Name == "assistant_instruction") {
                 string? instruction = null;
                 try {
@@ -150,11 +145,9 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
 
                 if (!string.IsNullOrWhiteSpace(instruction)) {
                     messages.Add(new UserMessage { Role = "assistant", Content = instruction });
-                    // continue to next iteration so instruction can influence subsequent calls
                     count++;
                     continue;
                 }
-                // if we couldn't extract an instruction, fall through and treat as raw assistant content
             }
             
             try {
@@ -170,16 +163,12 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             }
 
             if (string.IsNullOrWhiteSpace(itemArg)) {
-                // If we couldn't extract an item, add the raw args as an assistant message and stop looping
                 messages.Add(new UserMessage { Role = "assistant", Content = argsJson });
                 break;
             }
 
-            // Call the callback to add the item
             await addTodoItemCallback(itemArg);
 
-            // First, append an assistant message representing the function/tool call
-            // so the AI server sees the assistant initiated a tool call.
             messages.Add(new UserMessage {
                 Role = "assistant",
                 ToolCalls = new[] {
@@ -194,17 +183,11 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
                 }
             });
 
-            // Then append the added item as a `tool` message including the tool_call_id
-            // Content is JSON so the AI can parse a structured result.
             messages.Add(new UserMessage {
                 Role = "tool",
                 ToolCallId = toolCall.Id,
                 Content = JsonConvert.SerializeObject(new { status = "success", message = "Item added successfully.", item = itemArg })
             });
-            
-            // foreach (var item in messages) {
-            //     Console.WriteLine($"Role: {item.Role}, Content: {item.Content}");
-            // }
             count++;
         }
         
@@ -300,7 +283,6 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
                 resultContent = JsonConvert.SerializeObject(new { status = "error", message = ex.Message });
             }
 
-            // Append assistant message with the tool call
             var assistantToolCall = new UserMessage {
                 Role = "assistant",
                 ToolCalls = new[] {
@@ -317,7 +299,6 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
             messages.Add(assistantToolCall);
             if (onProgress != null) await onProgress(assistantToolCall);
 
-            // Append tool result
             var toolResult = new UserMessage {
                 Role = "tool",
                 ToolCallId = toolCall.Id,

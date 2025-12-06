@@ -39,7 +39,7 @@ public class WebSocketService {
                 Console.WriteLine($"No active WebSocket connections for ID: {id}");
                 return;
             }
-            sockets = [.. sockets]; // Create a copy to iterate safely
+            sockets = [.. sockets];
         }
 
         var messageBytes = Encoding.UTF8.GetBytes(message);
@@ -58,7 +58,6 @@ public class WebSocketService {
             }
         }
 
-        // Clean up closed sockets
         if (socketsToRemove.Count > 0) {
             lock (_lock) {
                 foreach (var socket in socketsToRemove) {
@@ -86,7 +85,6 @@ public class WebSocketService {
                     );
                     break;
                 }
-                // Ignore incoming messages - we only send
             }
         } catch (Exception ex) {
             Console.WriteLine($"WebSocket error for ID {id}: {ex.Message}");

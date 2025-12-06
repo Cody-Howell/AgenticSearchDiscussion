@@ -13,13 +13,11 @@ async function handleResponse(res: Response) {
         const text = await res.text().catch(() => "");
         throw new Error(`API error ${res.status}: ${text}`);
     }
-    // Try parse JSON, if empty return null
     const txt = await res.text();
     if (!txt) return null;
     try {
         return JSON.parse(txt);
     } catch (e) {
-        // not JSON
         return txt;
     }
 }

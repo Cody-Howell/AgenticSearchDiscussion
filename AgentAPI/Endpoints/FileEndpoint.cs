@@ -19,7 +19,6 @@ public static class FileEndpoint {
             }
         });
 
-        // Enumerate files under a named folder inside data_repo
         app.MapGet("/api/file/{folder}", (string folder, IWebHostEnvironment env) => {
             try {
                 var files = FileService.GetFilesInFolder(folder, env);
@@ -33,7 +32,6 @@ public static class FileEndpoint {
             }
         });
 
-        // Return the text contents of a specific file (supporting nested paths) inside a named folder
         app.MapGet("/api/file/{folder}/{**relpath}", (string folder, string relpath, IWebHostEnvironment env) => {
             try {
                 var contents = FileService.GetFileContents(folder, relpath, env);

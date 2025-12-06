@@ -18,7 +18,6 @@ public static class ChatEndpoint {
         
         app.MapGet("/api/chats/{chatId:int}/messages", async (int chatId, DBService db) => {
             var messages = await db.GetMessagesAsync(chatId);
-            // Preserve property casing to match WebSocket payloads and frontend schema
             var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web)
             {
                 PropertyNamingPolicy = null
@@ -41,7 +40,6 @@ public static class ChatEndpoint {
                 return Results.BadRequest("Title cannot be empty");
             }
             
-            // Remove quotes if the title is JSON-stringified
             title = title.Trim('"');
             
             var updated = await db.UpdateChatTitleAsync(chatId, title);
@@ -58,20 +56,16 @@ public static class ChatEndpoint {
                 return Results.BadRequest("Message cannot be empty");
             }
             
-            // Remove quotes if the message is JSON-stringified
             message = message.Trim('"');
             
-            // Store user message
             DBMessage userMsg = new () {ChatId = chatId, MessageText = message, Role = "user", Type = "message"};
             userMsg.Id = await db.AddMessageAsync(userMsg);
             
-            // Send WebSocket notification for user message
             await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
                 type = "chat_message",
                 content = userMsg
             }));
             
-            // Get all previous messages for context
             var previousMessages = await db.GetMessagesAsync(chatId);
             var conversationHistory = new List<UserMessage> {
                 new UserMessage { Role = "system", Content = TemplateAPI.Classes.SystemMessages.GenericChat }
@@ -79,12 +73,10 @@ public static class ChatEndpoint {
             
             foreach (var msg in previousMessages) {
                 if (msg.Type == "tool_call" && msg.Role == "assistant") {
-                    // Deserialize the tool calls from MessageText
                     UserToolCall[]? toolCalls = null;
                     try {
                         toolCalls = JsonConvert.DeserializeObject<UserToolCall[]>(msg.MessageText);
                     } catch {
-                        // If deserialization fails, skip this message or log error
                         continue;
                     }
                     
@@ -100,14 +92,12 @@ public static class ChatEndpoint {
                 }
             }
             
-            // Define file tools
             var fileTools = new[] {
                 TodoTools.GetTopLevelFoldersTool(),
                 TodoTools.GetFilesInFolderTool(),
                 TodoTools.GetFileContentsTool()
             };
             
-            // Process chat with AI
             AiResponse aiResp;
             try {
                 aiResp = await chatService.ProcessChatWithFileToolsAsync(
@@ -155,16 +145,12 @@ public static class ChatEndpoint {
                 return Results.InternalServerError($"Error calling AI server: {ex.Message}");
             }
             
-            // Tool call/result updates are streamed via onProgress above.
-            
-            // Store AI response
             if (aiResp?.Choices != null && aiResp.Choices.Length > 0) {
                 var aiMessage = aiResp.Choices[0].Message?.Content ?? "";
                 if (!string.IsNullOrWhiteSpace(aiMessage)) {
                     DBMessage aiMsg = new () {ChatId = chatId, MessageText = aiMessage, Role = "assistant", Type = "message"};
                     aiMsg.Id = await db.AddMessageAsync(aiMsg);
                     
-                    // Send WebSocket notification for AI message
                     await wsService.SendMessageAsync(chatId, JsonConvert.SerializeObject(new {
                         type = "chat_message",
                         content = aiMsg

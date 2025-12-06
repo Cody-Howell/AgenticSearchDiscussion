@@ -27,7 +27,6 @@ export default function FileManager() {
       .then((list) => {
         if (!mounted) return;
         setFolders(list || []);
-        // preselect first if present
         if (list && list.length > 0) {
           setSelectedFolder(list[0]);
         }
@@ -40,7 +39,6 @@ export default function FileManager() {
   }, []);
 
   useEffect(() => {
-    // when selectedFolder changes, fetch paths
     if (!selectedFolder) {
       setPaths([]);
       setSelectedPath("");
@@ -67,7 +65,6 @@ export default function FileManager() {
   }, [selectedFolder]);
 
   useEffect(() => {
-    // when selectedPath changes, fetch file contents
     if (!selectedFolder || !selectedPath) {
       setEditedText("");
       return;

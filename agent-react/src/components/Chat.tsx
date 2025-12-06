@@ -13,7 +13,6 @@ export const Chat: FC<ChatProps> = ({ messages, onSendMessage, className = '' })
     const [collapsedMessages, setCollapsedMessages] = useState<Set<number>>(new Set());
     const [processedMessageIds, setProcessedMessageIds] = useState<Set<number>>(new Set());
 
-    // Auto-collapse tool calls and tool results when new messages arrive
     useEffect(() => {
         const currentMessageIds = new Set(messages.map(m => m.Id));
         const newMessageIds = messages.filter(m => !processedMessageIds.has(m.Id));
@@ -58,7 +57,6 @@ export const Chat: FC<ChatProps> = ({ messages, onSendMessage, className = '' })
 
     return (
         <div className={`flex flex-col h-full ${className}`}>
-            {/* Scrollable area with centered fixed-width column */}
             <div className="flex-1 overflow-y-auto p-4 flex justify-center">
                 <div className="w-full max-w-[800px] space-y-4">
                 {messages.length === 0 ? (

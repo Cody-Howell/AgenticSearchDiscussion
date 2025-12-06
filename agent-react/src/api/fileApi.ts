@@ -19,7 +19,6 @@ export async function getFilesInFolder(folder: string): Promise<string[]> {
 
 export async function getFileContents(folder: string, relpath: string): Promise<string> {
   const encodedFolder = encodeURIComponent(folder);
-  // relpath may contain slashes; encodeURI preserves slashes
   const encodedRel = encodeURI(relpath);
   const res = await fetch(`/api/file/${encodedFolder}/${encodedRel}`);
   if (!res.ok) {

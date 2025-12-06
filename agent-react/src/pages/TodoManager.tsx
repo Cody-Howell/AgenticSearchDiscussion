@@ -97,15 +97,6 @@ export default function TodoManager() {
     if (todoItems.length === 0) return;
     answerAllTodos(currentId);
     navigate("/chat")
-    // setLoadingAnswerAll(true);
-    // try {
-    //   setError(null);
-    // } catch (err) {
-    //   console.error(err);
-    //   setError("Failed to answer all items");
-    // } finally {
-    //   setLoadingAnswerAll(false);
-    // }
   };
 
   if (!currentId || currentId <= 0) {

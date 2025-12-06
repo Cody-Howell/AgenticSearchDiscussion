@@ -22,36 +22,10 @@ builder.Services.AddSingleton<IDbConnection>(provider => {
 builder.Services.AddSingleton<DBService>();
 builder.Services.AddSingleton<TodoService>();
 builder.Services.AddSingleton<WebSocketService>();
-// HTTP client and Chat service registration
 builder.Services.AddHttpClient();
 var aiServerUrl = builder.Configuration["AI_SERVER_URL"] ?? throw new InvalidOperationException("AI_SERVER_URL environment variable is not set.");
 builder.Services.AddSingleton(new ChatServiceConfig { ServerUrl = aiServerUrl, AiToken = AI_TOKEN });
 builder.Services.AddSingleton<IChatService, ChatService>();
-
-// builder.Services.AddAuthentication(options =>
-// {
-//     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-// })
-// .AddCookie()
-// .AddOpenIdConnect(options =>
-// {
-//     var oidcConfig = builder.Configuration.GetSection("OpenIDConnectSettings");
-
-//     options.Authority = oidcConfig["Authority"];
-//     options.ClientId = oidcConfig["ClientId"];
-//     options.ClientSecret = oidcConfig["ClientSecret"];
-
-//     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//     options.ResponseType = OpenIdConnectResponseType.Code;
-
-//     options.SaveTokens = true;
-//     options.GetClaimsFromUserInfoEndpoint = true;
-
-//     options.MapInboundClaims = false;
-//     options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
-//     options.TokenValidationParameters.RoleClaimType = "roles";
-// });
 
 var app = builder.Build();
 
@@ -59,8 +33,6 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseWebSockets();
-// app.UseAuthentication();
-// app.UseAuthorization();
 
 app.MapGet("/api/health", () => "Hello");
 app.MapChatEndpoints()

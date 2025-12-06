@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 
 public class FileService {
-    // Walk upward from the provided start path (or AppContext/CurrentDirectory fallback)
     private static string? FindDataRepoDirectory(string? startingPath = null) {
         var start = startingPath ?? AppContext.BaseDirectory ?? Directory.GetCurrentDirectory();
         var dir = new DirectoryInfo(start);
@@ -18,7 +17,6 @@ public class FileService {
         return null;
     }
 
-    // Return top-level folder names under data_repo
     public static string[] GetTopLevelFolders(IWebHostEnvironment env) {
         var dataRepoPath = FindDataRepoDirectory(env.ContentRootPath);
         if (dataRepoPath is null) throw new DirectoryNotFoundException("data_repo folder not found");
@@ -29,7 +27,6 @@ public class FileService {
         return folders;
     }
 
-    // Enumerate files under a named folder inside data_repo, returning paths relative to the requested folder
     public static string[] GetFilesInFolder(string folder, IWebHostEnvironment env) {
         if (string.IsNullOrWhiteSpace(folder)) throw new ArgumentException("folder must be provided", nameof(folder));
 
@@ -59,7 +56,6 @@ public class FileService {
         return files;
     }
 
-    // Read the contents of a file inside a named folder. relpath may contain nested segments.
     public static string GetFileContents(string folder, string relpath, IWebHostEnvironment env) {
         if (string.IsNullOrWhiteSpace(folder) || string.IsNullOrWhiteSpace(relpath)) throw new ArgumentException("folder and path must be provided");
 
