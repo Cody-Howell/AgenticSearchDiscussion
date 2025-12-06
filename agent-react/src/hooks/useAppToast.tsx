@@ -21,7 +21,10 @@ export function useAppToast() {
                 Dismiss
               </button>
             </div>
-          )
+          ),
+          {
+            id: message,
+          }
         );
       case "loading":
         return toast.loading(message, {

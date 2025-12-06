@@ -23,7 +23,7 @@ export default function AuthSection() {
     // console.log(auth.user?.access_token);
     return (
       <div className="space-y-3 text-emerald-50">
-        <div>Hello {auth.user?.profile.sub}</div>
+        <div>Hello {auth.user?.profile.email}</div>
         <button 
           onClick={() => void auth.removeUser()} 
           className="px-4 py-2 bg-emerald-600 text-emerald-50 rounded-lg cursor-pointer hover:bg-emerald-500 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg shadow-emerald-950/50"

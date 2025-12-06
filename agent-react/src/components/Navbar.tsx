@@ -55,8 +55,8 @@ export default function Navbar() {
   const navItems: string[] = [
     JSON.stringify({ title: "Home", path: "/" }),
     JSON.stringify({ title: "Auth", path: "/auth" }),
-    JSON.stringify({ title: "Todo", path: "/todo" }),
     JSON.stringify({ title: "Files", path: "/file" }),
+    JSON.stringify({ title: "Todo", path: "/todo" }),
     JSON.stringify({ title: "Chat", path: "/chat" }),
   ];
 
