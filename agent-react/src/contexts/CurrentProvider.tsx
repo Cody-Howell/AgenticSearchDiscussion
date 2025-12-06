@@ -4,6 +4,7 @@ import { getTodos, addTodo, deleteTodo } from "../api/todoApi";
 import { TodoItem, TodoItemSchema } from "../types/todos";
 import { getMessages, addMessage, getAllChats, createChat as apiCreateChat, updateChatTitle as apiUpdateChatTitle } from "../api/chatApi";
 import { Message as ChatMessage, Chat, MessageSchema } from "../types/chats";
+import { useAppToast } from "../hooks/useAppToast";
 
 
 export function StateProvider({ children }: { children: ReactNode; }) {
@@ -12,6 +13,7 @@ export function StateProvider({ children }: { children: ReactNode; }) {
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [chats, setChats] = useState<Chat[]>([]);
     const wsRef = useRef<WebSocket | null>(null);
+    const { showToast } = useAppToast();
 
     const refresh = async () => {
         if (!currentId) {
@@ -24,8 +26,9 @@ export function StateProvider({ children }: { children: ReactNode; }) {
             console.log(todos);
             setTodoItems(todos);
         } catch (e) {
-             
             console.error("Failed to load todos", e);
+            const message = e instanceof Error ? e.message : "Failed to load todos";
+            showToast(message, "error");
         }
     };
 
@@ -39,6 +42,8 @@ export function StateProvider({ children }: { children: ReactNode; }) {
             setChatMessages(messages);
         } catch (e) {
             console.error("Failed to load chat messages", e);
+            const message = e instanceof Error ? e.message : "Failed to load chat messages";
+            showToast(message, "error");
         }
     };
 
@@ -48,6 +53,8 @@ export function StateProvider({ children }: { children: ReactNode; }) {
             setChats(allChats);
         } catch (e) {
             console.error("Failed to load chats", e);
+            const message = e instanceof Error ? e.message : "Failed to load chats";
+            showToast(message, "error");
         }
     };
 
@@ -58,6 +65,8 @@ export function StateProvider({ children }: { children: ReactNode; }) {
             setCurrentId(result.id);
         } catch (e) {
             console.error("Failed to create chat", e);
+            const message = e instanceof Error ? e.message : "Failed to create chat";
+            showToast(message, "error");
         }
     };
 
@@ -67,6 +76,8 @@ export function StateProvider({ children }: { children: ReactNode; }) {
             await refreshChats();
         } catch (e) {
             console.error("Failed to update chat title", e);
+            const message = e instanceof Error ? e.message : "Failed to update chat title";
+            showToast(message, "error");
         }
     };
 
@@ -109,6 +120,8 @@ export function StateProvider({ children }: { children: ReactNode; }) {
                 // Add more message handlers as needed
             } catch (e) {
                 console.error('Failed to parse WebSocket message:', e);
+                const message = e instanceof Error ? e.message : "Failed to parse WebSocket message";
+                showToast(message, "error");
             }
         };
 

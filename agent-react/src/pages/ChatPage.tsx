@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { Chat } from "../components/Chat";
 import { useCurrent } from "../contexts/CurrentContext";
+import { useAppToast } from "../hooks/useAppToast";
 
 export default function ChatPage() {
     const { currentId, chatMessages, addChatMessage, refreshChat } = useCurrent();
+    const { showToast } = useAppToast();
 
     useEffect(() => {
         void refreshChat();
@@ -15,6 +17,8 @@ export default function ChatPage() {
             await addChatMessage(text);
         } catch (err) {
             console.error("Failed to send message:", err);
+            const message = err instanceof Error ? err.message : "Failed to send message";
+            showToast(message, "error");
             throw err;
         }
     };

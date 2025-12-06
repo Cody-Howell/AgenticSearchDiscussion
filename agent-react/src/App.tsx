@@ -9,6 +9,8 @@ import ChatPage from "./pages/ChatPage";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import { StateProvider } from "./contexts/CurrentProvider";
+import ErrorBoundary from "./contexts/ErrorBoundary";
+import { Toaster } from "react-hot-toast";
 
 const onSigninCallback = (_user: User | void): void => {
   window.history.replaceState({}, document.title, window.location.pathname);
@@ -23,29 +25,54 @@ const oidcConfig = {
 function App() {
   return (
     <AuthProvider {...oidcConfig}>
-      <StateProvider>
-        <div className="h-screen bg-slate-950 text-emerald-50 overflow-hidden">
-          <BrowserRouter>
-            <div className="max-w-7xl mx-auto h-full px-4 py-4 flex flex-col gap-4">
-              <div className="flex-none">
-                <Navbar />
-              </div>
-              <div className="flex-1 flex gap-4 overflow-hidden">
-                <Sidebar />
-                <div className="flex-1 min-w-0 p-6 bg-emerald-950/60 border border-emerald-900/60 rounded-2xl shadow-xl shadow-emerald-950/50 backdrop-blur-sm overflow-y-auto">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/auth" element={<AuthSection />} />
-                    <Route path="/todo" element={<TodoManager />} />
-                    <Route path="/file" element={<FileManager />} />
-                    <Route path="/chat" element={<ChatPage />} />
-                  </Routes>
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 5000,
+          style: {
+            background: '#064e3b',
+            color: '#d1fae5',
+            border: '1px solid #047857',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#d1fae5',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#d1fae5',
+            },
+          },
+        }}
+      />
+      <ErrorBoundary>
+        <StateProvider>
+          <div className="h-screen bg-slate-950 text-emerald-50 overflow-hidden">
+            <BrowserRouter>
+              <div className="max-w-7xl mx-auto h-full px-4 py-4 flex flex-col gap-4">
+                <div className="flex-none">
+                  <Navbar />
+                </div>
+                <div className="flex-1 flex gap-4 overflow-hidden">
+                  <Sidebar />
+                  <div className="flex-1 min-w-0 p-6 bg-emerald-950/60 border border-emerald-900/60 rounded-2xl shadow-xl shadow-emerald-950/50 backdrop-blur-sm overflow-y-auto">
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/auth" element={<AuthSection />} />
+                      <Route path="/todo" element={<TodoManager />} />
+                      <Route path="/file" element={<FileManager />} />
+                      <Route path="/chat" element={<ChatPage />} />
+                    </Routes>
+                  </div>
                 </div>
               </div>
-            </div>
-          </BrowserRouter>
-        </div>
-      </StateProvider>
+            </BrowserRouter>
+          </div>
+        </StateProvider>
+      </ErrorBoundary>
     </AuthProvider>
   );
 }

@@ -3,6 +3,8 @@ import EditableItem from "../components/EditableItem";
 import Spinner from "../components/Spinner";
 import { useCurrent } from "../contexts/CurrentContext";
 import { breakTodo, answerAllTodos } from "../api/todoApi";
+import { useNavigate } from "react-router";
+import { useAppToast } from "../hooks/useAppToast";
 
 export default function TodoManager() {
   const { currentId, todoItems, addItem, deleteItem } = useCurrent();
@@ -11,8 +13,9 @@ export default function TodoManager() {
   const [error, setError] = useState<string | null>(null);
   const [loadingAdd, setLoadingAdd] = useState(false);
   const [loadingBreak, setLoadingBreak] = useState(false);
-  const [loadingAnswerAll, setLoadingAnswerAll] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { showToast } = useAppToast();
 
   const onAdd = async (e?: FormEvent) => {
     e?.preventDefault();
@@ -27,7 +30,9 @@ export default function TodoManager() {
       setNewText("");
     } catch (err) {
       console.error(err);
-      setError("Failed to add item");
+      const message = err instanceof Error ? err.message : "Failed to add item";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setLoadingAdd(false);
     }
@@ -47,7 +52,9 @@ export default function TodoManager() {
       setError(null);
     } catch (err) {
       console.error(err);
-      setError("Failed to send break message");
+      const message = err instanceof Error ? err.message : "Failed to send break message";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setLoadingBreak(false);
     }
@@ -60,7 +67,9 @@ export default function TodoManager() {
       setError(null);
     } catch (err) {
       console.error(err);
-      setError("Failed to delete item");
+      const message = err instanceof Error ? err.message : "Failed to delete item";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setLoadingDelete(null);
     }
@@ -73,26 +82,30 @@ export default function TodoManager() {
       await deleteItem(id);
       setError(null);
     } catch (err) {
-      setError("Failed to update item");
+      console.error(err);
+      const message = err instanceof Error ? err.message : "Failed to update item";
+      setError(message);
+      showToast(message, "error");
     }
   };
 
-  const onAnswerAll = async () => {
+  const onAnswerAll = () => {
     if (!currentId) {
       setError("Set a valid id before answering all items");
       return;
     }
     if (todoItems.length === 0) return;
-    setLoadingAnswerAll(true);
-    try {
-      await answerAllTodos(currentId);
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to answer all items");
-    } finally {
-      setLoadingAnswerAll(false);
-    }
+    answerAllTodos(currentId);
+    navigate("/chat")
+    // setLoadingAnswerAll(true);
+    // try {
+    //   setError(null);
+    // } catch (err) {
+    //   console.error(err);
+    //   setError("Failed to answer all items");
+    // } finally {
+    //   setLoadingAnswerAll(false);
+    // }
   };
 
   return (
@@ -129,16 +142,9 @@ export default function TodoManager() {
           <div className="pt-2">
             <button
               onClick={onAnswerAll}
-              disabled={loadingAnswerAll}
               className="px-4 py-2 bg-emerald-600 text-emerald-50 rounded-lg disabled:bg-emerald-800/60 disabled:text-emerald-200/60 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-950/50"
             >
-              {loadingAnswerAll ? (
-                <>
-                  <Spinner /> Answering...
-                </>
-              ) : (
-                "Answer All"
-              )}
+                Answer All
             </button>
           </div>
         ) : null}
