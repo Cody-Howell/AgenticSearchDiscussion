@@ -1,9 +1,10 @@
+import { useCallback } from "react";
 import toast from "react-hot-toast";
 
 type ToastType = "success" | "error" | "info" | "loading";
 
 export function useAppToast() {
-  const showToast = (message: string, type: ToastType = "info") => {
+  const showToast = useCallback((message: string, type: ToastType = "info") => {
     switch (type) {
       case "success":
         return toast.success(message, {
@@ -37,15 +38,15 @@ export function useAppToast() {
           icon: "ℹ️",
         });
     }
-  };
+  }, []);
 
-  const dismissToast = (toastId?: string) => {
+  const dismissToast = useCallback((toastId?: string) => {
     if (toastId) {
       toast.dismiss(toastId);
     } else {
       toast.dismiss();
     }
-  };
+  }, []);
 
   return { showToast, dismissToast };
 }
