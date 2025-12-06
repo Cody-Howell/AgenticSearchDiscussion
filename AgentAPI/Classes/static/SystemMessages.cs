@@ -13,7 +13,7 @@ public static class SystemMessages {
             Do not merge unrelated ideas, and do not split a coherent idea unnecessarily.
             Do not repeat or rephrase a task once emitted.
             Stop only when no content remains unparsed.
-            After the final task has been emitted, send a short confirmation message to the user that the breakdown is complete.
+            After the final task has been emitted, call the user_take_a_look function to signal completion.
             """;
 
     public static readonly string ReadTodos = """

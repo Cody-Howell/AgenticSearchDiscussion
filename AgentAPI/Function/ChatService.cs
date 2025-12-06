@@ -12,7 +12,7 @@ public class ChatServiceConfig {
 }
 
 public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig config) : IChatService {
-    private const int MaxTodoBreakdownIterations = 8;
+    private const int MaxTodoBreakdownIterations = 20;
 
     public async Task<AiResponse> SendMessageAsync(UserMessage[] messages, Tool[]? functions = null) {
         var payload = new AiRequest {
@@ -86,7 +86,7 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
 
     public async Task<AiResponse> ProcessTodoBreakdownAsync(
         List<UserMessage> messages,
-        Tool toolDefinition,
+        Tool[] toolDefinitions,
         Func<string, Task> addTodoItemCallback) {
         
         AiResponse aiResp;
@@ -95,9 +95,9 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
         while (true) {
             Console.WriteLine("\n\n\n------Starting New Iteration--------");
             if (count < MaxTodoBreakdownIterations) {
-                aiResp = await SendMessageAsync([.. messages], [toolDefinition]);
+                aiResp = await SendMessageAsync([.. messages], toolDefinitions);
             } else {
-                aiResp = await SendMessageAsync([.. messages], []);
+                aiResp = await SendMessageAsync([.. messages], [toolDefinitions[1]]);
             }
 
             if (aiResp?.Choices == null || aiResp.Choices.Length == 0) break;
@@ -108,6 +108,30 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
 
             var argsJson = toolCall.Function.Arguments ?? string.Empty;
             string? itemArg = null;
+
+            // If the tool call is user_take_a_look, append it and signal completion
+            if (toolCall.Function.Name == "user_take_a_look") {
+                messages.Add(new UserMessage {
+                    Role = "assistant",
+                    ToolCalls = new[] {
+                        new UserToolCall {
+                            Type = "function",
+                            Function = new UserToolFunction {
+                                Name = "user_take_a_look",
+                                Arguments = argsJson
+                            },
+                            Id = toolCall.Id
+                        }
+                    }
+                });
+
+                messages.Add(new UserMessage {
+                    Role = "tool",
+                    ToolCallId = toolCall.Id,
+                    Content = JsonConvert.SerializeObject(new { status = "success", message = "User notified to review completed work." })
+                });
+                break;
+            }
 
             // If the tool call is an assistant instruction, add it as an assistant message
             if (toolCall.Function.Name == "assistant_instruction") {
@@ -178,9 +202,9 @@ public class ChatService(IHttpClientFactory httpFactory, ChatServiceConfig confi
                 Content = JsonConvert.SerializeObject(new { status = "success", message = "Item added successfully.", item = itemArg })
             });
             
-            foreach (var item in messages) {
-                Console.WriteLine($"Role: {item.Role}, Content: {item.Content}");
-            }
+            // foreach (var item in messages) {
+            //     Console.WriteLine($"Role: {item.Role}, Content: {item.Content}");
+            // }
             count++;
         }
         

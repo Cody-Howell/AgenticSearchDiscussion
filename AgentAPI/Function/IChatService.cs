@@ -6,7 +6,7 @@ namespace TemplateAPI.Function {
         Task<AiResponse> SendMessageAsync(UserMessage[] messages, Tool[]? functions = null);
         Task<AiResponse> ProcessTodoBreakdownAsync(
             List<UserMessage> messages,
-            Tool toolDefinition,
+            Tool[] toolDefinitions,
             Func<string, Task> addTodoItemCallback);
         Task<AiResponse> ProcessChatWithFileToolsAsync(
             List<UserMessage> messages,

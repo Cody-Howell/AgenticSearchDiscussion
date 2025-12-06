@@ -44,13 +44,14 @@ public static class TodoEndpoint {
                 new UserMessage { Role = "user", Content = message }
             };
 
-            var functionTest = TemplateAPI.Classes.TodoTools.GetTodoListTool();
+            var todoTool = TemplateAPI.Classes.TodoTools.GetTodoListTool();
+            var userLookTool = TemplateAPI.Classes.TodoTools.GetUserTakeALookTool();
 
             AiResponse aiResp;
             try {
                 aiResp = await chatService.ProcessTodoBreakdownAsync(
                     messages,
-                    functionTest,
+                    new Tool[] { todoTool, userLookTool },
                     async (item) => await todos.AddTodoItem(id, item)
                 );
             } catch (Exception ex) {

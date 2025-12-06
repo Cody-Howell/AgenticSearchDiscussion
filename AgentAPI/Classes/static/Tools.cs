@@ -74,4 +74,17 @@ public static class TodoTools {
             }
         }
     };
+
+    public static Tool GetUserTakeALookTool() => new Tool {
+        Type = "function",
+        Function = new CalledFunction {
+            Name = "user_take_a_look",
+            Description = "Request the user to take a look at the completed work. Call this when all tasks are finished.",
+            Parameters = new Parameters {
+                Type = "object",
+                Properties = new Dictionary<string, ParameterDescription>(),
+                ParametersRequired = []
+            }
+        }
+    };
 }
