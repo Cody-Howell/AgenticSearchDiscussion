@@ -65,7 +65,7 @@ export const Chat: FC<ChatProps> = ({ messages, onSendMessage, className = '' })
                     messages.map((message) => (
                         <div 
                             key={message.Id} 
-                                className={`p-4 rounded-xl wrap-break-word whitespace-pre-wrap cursor-pointer border transition-all duration-200 hover:border-emerald-400/60 hover:-translate-y-0.5 shadow-lg shadow-emerald-950/30 ${
+                                className={`p-4 rounded-xl wrap-break-word whitespace-pre-wrap cursor-pointer border transition-all duration-200 hover:border-emerald-400/60 hover:-translate-y-0.5 shadow-lg shadow-emerald-950/30 overflow-hidden ${
                                     message.Role.toLowerCase() === 'user' 
                                         ? 'bg-emerald-900/60 border-emerald-800/70 ml-8 text-emerald-50' 
                                         : 'bg-slate-900/70 border-slate-800 mr-8 text-emerald-50'
@@ -86,7 +86,7 @@ export const Chat: FC<ChatProps> = ({ messages, onSendMessage, className = '' })
                             {!collapsedMessages.has(message.Id) && (
                                 <MarkdownDisplay 
                                     value={message.MessageText} 
-                                    className="prose prose-sm max-w-none wrap-break-word"
+                                    className="prose prose-sm max-w-none wrap-break-word overflow-x-auto"
                                 />
                             )}
                         </div>

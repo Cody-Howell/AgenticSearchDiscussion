@@ -34,4 +34,23 @@
   overflow-wrap: anywhere;
   word-break: break-word;
   white-space: pre-wrap;
+  max-width: 100%;
+}
+
+/* Code blocks should scroll horizontally instead of breaking layout */
+.ai-return pre {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre;
+}
+
+.ai-return code {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Inline code should break if needed */
+.ai-return p code,
+.ai-return li code {
+  white-space: pre-wrap;
 }
