@@ -11,14 +11,14 @@ services:
       - internal
    volumes:
      - ./sql:/docker-entrypoint-initdb.d
-    #  - ./dbdata:/var/lib/postgresql/data
+     - ./dbdata:/var/lib/postgresql/data
    # ports:
    #   - 5432:5432
    # command: ["postgres", "-c", "log_statement=all"] # Enables verbose logging
 
     
   api:  
-    image: codyhowl/agentic-api:build-35
+    image: codyhowl/agentic-api:build-36
     restart: always
     environment:
       - DOTNET_DATABASE_STRING=Host=db;Database=agentDb;Username=cody;Password=123456abc;
