@@ -50,6 +50,7 @@ export default function TodoManager() {
       await breakTodo(currentId, breakMessage.trim());
       setBreakMessage("");
       setError(null);
+      showToast("Paragraph broken successfully!", "success");
     } catch (err) {
       console.error(err);
       const message = err instanceof Error ? err.message : "Failed to send break message";
